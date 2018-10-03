@@ -1,11 +1,12 @@
 #include "RenderWindow.h"
 
-bool RenderWindow::Initialize(	
-								HINSTANCE		hInstance,
-								std::string		windowTitle,
-								std::string		windowClass,
-								int				width,
-								int				height) {
+bool RenderWindow::Initialize(
+	HINSTANCE		hInstance,
+	std::string		windowTitle,
+	std::string		windowClass,
+	int				width,
+	int				height) {
+	
 	this->_hInstance = hInstance;
 	this->_windowTitle = windowTitle;
 	this->_windowTitleWide = StringConverter::StringToWide(this->_windowTitle);
@@ -18,19 +19,19 @@ bool RenderWindow::Initialize(
 	
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-createwindowexa
 	this->_handle = 
-		CreateWindowEx(	
-						0,
-						this->_windowClassWide.c_str(),
-						this->_windowTitleWide.c_str(),
-						WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-						0,
-						0,
-						this->_width,
-						this->_height,
-						NULL,
-						NULL,
-						this->_hInstance,
-						nullptr);
+		CreateWindowEx(
+			0,
+			this->_windowClassWide.c_str(),
+			this->_windowTitleWide.c_str(),
+			WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+			0,
+			0,
+			this->_width,
+			this->_height,
+			NULL,
+			NULL,
+			this->_hInstance,
+			nullptr);
 
 	if (!this->_handle) {
 		ErrorLogger::Log(GetLastError(), "CreateWindow failed for " + this->_windowTitle);
@@ -52,11 +53,12 @@ bool RenderWindow::ProcessMessages() {
 
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-peekmessagea
 	if (PeekMessage(
-					&message,
-					this->_handle,
-					0,
-					0,
-					PM_REMOVE)) {
+		&message,
+		this->_handle,
+		0,
+		0,
+		PM_REMOVE)) {
+
 		TranslateMessage(&message);
 		DispatchMessage(&message);
 	}

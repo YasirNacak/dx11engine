@@ -4,11 +4,11 @@
 class RenderWindow {
 public:
 	bool Initialize(
-					HINSTANCE		hInstance,
-					std::string		windowTitle,
-					std::string		windowClass,
-					int				width = 320,
-					int				height = 240);
+		HINSTANCE		hInstance,
+		std::string		windowTitle,
+		std::string		windowClass,
+		int				width = 320,
+		int				height = 240);
 	bool ProcessMessages();
 	~RenderWindow();
 
