@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "RenderWindow.h"
+#include "Engine.h"
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "DirectXTK.lib")
 
@@ -9,9 +9,9 @@ int APIENTRY wWinMain(
 	_In_ LPWSTR			lpCmdLine,
 	_In_ int			nCmdShow) {
 
-	RenderWindow renderWindow;
-	renderWindow.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720);
-	while (renderWindow.ProcessMessages()) {
+	Engine engine;
+	engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720);
+	while (engine.ProcessMessages()) {
 
 	}
 	return 0;

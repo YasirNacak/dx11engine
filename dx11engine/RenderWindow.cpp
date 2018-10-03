@@ -1,6 +1,7 @@
-#include "RenderWindow.h"
+#include "WindowContainer.h"
 
 bool RenderWindow::Initialize(
+	WindowContainer	*pWindowContainer,
 	HINSTANCE		hInstance,
 	std::string		windowTitle,
 	std::string		windowClass,
@@ -31,7 +32,7 @@ bool RenderWindow::Initialize(
 			NULL,
 			NULL,
 			this->_hInstance,
-			nullptr);
+			pWindowContainer);
 
 	if (!this->_handle) {
 		ErrorLogger::Log(GetLastError(), "CreateWindow failed for " + this->_windowTitle);
@@ -83,13 +84,53 @@ RenderWindow::~RenderWindow() {
 	}
 }
 
+LRESULT CALLBACK HandleMessageRedirect(HWND hwnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+	switch (uMessage)
+	{
+	case WM_CLOSE:
+	{
+		DestroyWindow(hwnd);
+		return 0;
+	}
+	default:
+	{
+		WindowContainer * const pWindow = reinterpret_cast<WindowContainer*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+		return pWindow->WindowProc(hwnd, uMessage, wParam, lParam);
+	}
+	}
+}
+
+LRESULT CALLBACK SetupMessageHandler(HWND hwnd, UINT uMessage, WPARAM wParam, LPARAM lParam) {
+	switch (uMessage)
+	{
+	case WM_NCCREATE:
+	{
+		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagcreatestructw
+		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
+		WindowContainer *pWindow = reinterpret_cast<WindowContainer*>(pCreate->lpCreateParams);
+		if (pWindow == nullptr) {
+			ErrorLogger::Log("Pointer to window container is null during WM_NCCREATE.");
+			exit(-1);
+		}
+		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-setwindowlongptra
+		SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWindow));
+		SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HandleMessageRedirect));
+		return pWindow->WindowProc(hwnd, uMessage, wParam, lParam);
+	}
+	default:
+	{
+		return DefWindowProc(hwnd, uMessage, wParam, lParam);
+	}
+	}
+}
+
 void RenderWindow::RegisterWindowClass() {
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagwndclassexa
 
 	WNDCLASSEX windowClass;
 
 	windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	windowClass.lpfnWndProc = DefWindowProc;
+	windowClass.lpfnWndProc = SetupMessageHandler;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = this->_hInstance;
