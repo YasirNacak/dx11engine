@@ -2,8 +2,12 @@
 #include "StringConverter.h"
 #include <Windows.h>
 
-class ErrorLogger {
-public:
-	static void Log(std::string message);
-	static void Log(HRESULT hr, std::string message);
-};
+namespace s3d {
+	namespace utility {
+		class ErrorLogger {
+		public:
+			static void Log(std::string message);
+			static void Log(HRESULT hr, std::string message);
+		};
+	}
+}
