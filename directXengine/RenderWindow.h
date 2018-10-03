@@ -3,7 +3,8 @@
 
 class RenderWindow {
 public:
-	bool Initialize(HINSTANCE		hInstance,
+	bool Initialize(
+					HINSTANCE		hInstance,
 					std::string		windowTitle,
 					std::string		windowClass,
 					int				width = 320,

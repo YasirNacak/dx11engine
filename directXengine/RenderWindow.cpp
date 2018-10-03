@@ -1,6 +1,7 @@
 #include "RenderWindow.h"
 
-bool RenderWindow::Initialize(	HINSTANCE		hInstance,
+bool RenderWindow::Initialize(	
+								HINSTANCE		hInstance,
 								std::string		windowTitle,
 								std::string		windowClass,
 								int				width,
@@ -17,7 +18,8 @@ bool RenderWindow::Initialize(	HINSTANCE		hInstance,
 	
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-createwindowexa
 	this->_handle = 
-		CreateWindowEx(	0,
+		CreateWindowEx(	
+						0,
 						this->_windowClassWide.c_str(),
 						this->_windowTitleWide.c_str(),
 						WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
@@ -49,7 +51,8 @@ bool RenderWindow::ProcessMessages() {
 	ZeroMemory(&message, sizeof(MSG));
 
 	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-peekmessagea
-	if (PeekMessage(&message,
+	if (PeekMessage(
+					&message,
 					this->_handle,
 					0,
 					0,
