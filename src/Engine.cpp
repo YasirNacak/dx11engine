@@ -17,10 +17,16 @@ namespace s3d {
 		{
 			const auto ch = _keyboard.ReadChar();
 		}
+		
 		while(!_keyboard.IsKeyBufferEmpty())
 		{
 			auto kbe = _keyboard.ReadKey();
 			const auto keycode = kbe.GetKeyCode();
+		}
+
+		while(!_mouse.IsEventBufferEmpty())
+		{
+			auto me = _mouse.ReadEvent();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderWindow.h"
 #include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 namespace s3d {
 	class WindowContainer
@@ -10,5 +11,6 @@ namespace s3d {
 	protected:
 		RenderWindow _renderWindow;
 		input::Keyboard _keyboard;
+		input::Mouse _mouse;
 	};
 }
