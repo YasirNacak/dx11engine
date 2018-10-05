@@ -1,0 +1,92 @@
+#include "Graphics.h"
+
+namespace s3d
+{
+	namespace graphics
+	{
+		bool Graphics::Initialize(HWND hwnd, int width, int height)
+		{
+			return InitializeDirectX(hwnd, width, height);
+		}
+
+		void Graphics::RenderFrame()
+		{
+			float bgColor[] = {110.0f / 255.0f, 129.0f / 255.0f, 159.0f / 255.0f, 1.0f};
+			this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
+			this->_swapChain->Present(1, NULL);
+		}
+
+		bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
+		{
+			auto adapters = AdapterReader::GetAdapters();
+
+			if(adapters.empty())
+			{
+				utility::ErrorLogger::Log("No DXGI adapters found.");
+				return false;
+			}
+
+			// https://docs.microsoft.com/en-us/windows/desktop/api/dxgi/ns-dxgi-dxgi_swap_chain_desc
+			DXGI_SWAP_CHAIN_DESC scd;
+			ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+
+			scd.BufferDesc.Width = width;
+			scd.BufferDesc.Height = height;
+			scd.BufferDesc.RefreshRate.Denominator = 1;
+			scd.BufferDesc.RefreshRate.Numerator = 60;
+			scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+			scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+			scd.SampleDesc.Count = 1;
+			scd.SampleDesc.Quality = 0;
+
+			scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			scd.BufferCount = 1;
+			scd.OutputWindow = hwnd;
+			scd.Windowed = TRUE;
+			scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+			scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+			// https://docs.microsoft.com/en-us/windows/desktop/api/d3d11/nf-d3d11-d3d11createdeviceandswapchain
+			auto hr = D3D11CreateDeviceAndSwapChain(
+				adapters[0].PAdapter,
+				D3D_DRIVER_TYPE_UNKNOWN,
+				NULL,
+				NULL,
+				NULL,
+				0,
+				D3D11_SDK_VERSION,
+				&scd,
+				this->_swapChain.GetAddressOf(),
+				this->_device.GetAddressOf(),
+				NULL,
+				this->_deviceContext.GetAddressOf());
+
+			if(FAILED(hr))
+			{
+				utility::ErrorLogger::Log(hr, "Creating device and swap chain failed.");
+				return false;
+			}
+
+			Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+			hr = this->_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
+			if(FAILED(hr))
+			{
+				utility::ErrorLogger::Log(hr, "Back buffer could not be get.");
+				return false;
+			}
+
+			hr = this->_device->CreateRenderTargetView(backBuffer.Get(), NULL, this->_renderTargetView.GetAddressOf());
+			if(FAILED(hr))
+			{
+				utility::ErrorLogger::Log(hr, "Creating render target view failed.");
+				return false;
+			}
+
+			this->_deviceContext->OMSetRenderTargets(1, this->_renderTargetView.GetAddressOf(), NULL);
+
+			return true;
+		}
+	}
+}

@@ -14,6 +14,7 @@ namespace s3d {
 			int				width = 320,
 			int				height = 240);
 		bool ProcessMessages();
+		HWND GetWindowHandle() const;
 		~RenderWindow();
 
 	private:

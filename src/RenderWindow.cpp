@@ -54,7 +54,7 @@ namespace s3d {
 		ZeroMemory(&message, sizeof(MSG));
 
 		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-peekmessagea
-		if (PeekMessage(
+		while (PeekMessage(
 			&message,
 			this->_handle,
 			0,
@@ -74,6 +74,11 @@ namespace s3d {
 		}
 
 		return true;
+	}
+
+	HWND RenderWindow::GetWindowHandle() const
+	{
+		return this->_handle;
 	}
 
 	RenderWindow::~RenderWindow() {

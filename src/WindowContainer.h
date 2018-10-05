@@ -2,6 +2,7 @@
 #include "RenderWindow.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
+#include "graphics/Graphics.h"
 
 namespace s3d {
 	class WindowContainer
@@ -13,5 +14,6 @@ namespace s3d {
 		RenderWindow _renderWindow;
 		input::Keyboard _keyboard;
 		input::Mouse _mouse;
+		graphics::Graphics _graphics;
 	};
 }

@@ -3,7 +3,22 @@
 namespace s3d {
 	bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
 	{
-		return this->_renderWindow.Initialize(this, hInstance, windowTitle, windowClass, width, height);
+		if(!this->_renderWindow.Initialize(
+			this,
+			hInstance,
+			windowTitle,
+			windowClass,
+			width,
+			height))
+		{
+			return false;
+		}
+		if(_graphics.Initialize(this->_renderWindow.GetWindowHandle(), width, height))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	bool Engine::ProcessMessages()
@@ -28,5 +43,7 @@ namespace s3d {
 		{
 			auto me = _mouse.ReadEvent();
 		}
+
+		_graphics.RenderFrame();
 	}
 }

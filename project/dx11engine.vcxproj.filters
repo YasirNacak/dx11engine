@@ -1,78 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="src">
+      <UniqueIdentifier>{988632fb-3aab-47cc-a6b8-b07c48ea2a49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{1ed3bd6e-a2ce-48b0-8972-18fc68b39370}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{ee7d8116-f1ed-441f-9781-641ef23a0cbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics">
+      <UniqueIdentifier>{e28b0d21-9cc3-4ac7-913b-16dd7f60347f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\ErrorLogger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\RenderWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\WindowContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utility\StringConverter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\input\Keyboard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src\input</Filter>
     </ClCompile>
     <ClCompile Include="..\src\input\KeyboardEvent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src\input</Filter>
     </ClCompile>
     <ClCompile Include="..\src\input\Mouse.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src\input</Filter>
     </ClCompile>
     <ClCompile Include="..\src\input\MouseEvent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics\Graphics.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\StringConverter.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utility\ErrorLogger.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RenderWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\WindowContainer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\graphics\AdapterReader.cpp">
+      <Filter>src\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\utility\StringConverter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\utility\ErrorLogger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\RenderWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\WindowContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\input\Keyboard.h">
-      <Filter>Header Files</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
     <ClInclude Include="..\src\input\KeyboardEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\input\Mouse.h">
-      <Filter>Header Files</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
     <ClInclude Include="..\src\input\MouseEvent.h">
-      <Filter>Header Files</Filter>
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\input\Mouse.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\Graphics.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\ErrorLogger.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\StringConverter.h">
+      <Filter>src\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\WindowContainer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\RenderWindow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Engine.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\AdapterReader.h">
+      <Filter>src\graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
