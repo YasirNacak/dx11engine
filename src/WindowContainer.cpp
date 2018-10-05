@@ -1,6 +1,29 @@
 #include "WindowContainer.h"
 
 namespace s3d {
+	WindowContainer::WindowContainer()
+	{
+		static auto isRawInputInitialized = false;
+		if(!isRawInputInitialized)
+		{
+			// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagrawinputdevice
+			RAWINPUTDEVICE rid;
+
+			rid.usUsagePage = 0x01;
+			rid.usUsage = 0x02;
+			rid.dwFlags = 0;
+			rid.hwndTarget = 0;
+
+			if(!RegisterRawInputDevices(&rid, 1, sizeof rid))
+			{
+				utility::ErrorLogger::Log(GetLastError(), "Failed to register raw input devices");
+				exit(-1);
+			}
+
+			isRawInputInitialized = true;
+		}
+	}
+
 	LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMessage, WPARAM wParam, LPARAM lParam)
 	{
 		// these two are only used in mouse events
@@ -91,12 +114,31 @@ namespace s3d {
 				_mouse.OnWheelUp(mousePosX, mousePosY);
 			else if(scrollDir < 0)
 				_mouse.OnWheelDown(mousePosX, mousePosY);
-			break;
+			return 0;
 		}
 		case WM_MOUSEMOVE:
 		{
 			_mouse.OnMouseMove(mousePosX, mousePosY);
 			return 0;
+		}
+		case WM_INPUT:
+		{
+			// https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-input
+			UINT dataSize;
+			GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, 0, &dataSize, sizeof(RAWINPUTHEADER));
+			if(dataSize > 0)
+			{
+				auto rawData = std::make_unique<BYTE[]>(dataSize);
+				if(GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)))
+				{
+					const auto raw = reinterpret_cast<RAWINPUT*>(rawData.get());
+					if(raw->header.dwType == RIM_TYPEMOUSE)
+					{
+						_mouse.OnMouseMoveRaw(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
+					}
+				}
+			}
+			return DefWindowProc(hwnd, uMessage, wParam, lParam);
 		}
 		default:
 			return DefWindowProc(hwnd, uMessage, wParam, lParam);

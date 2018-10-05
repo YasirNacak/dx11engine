@@ -56,6 +56,11 @@ namespace s3d
 			this->_eventBuffer.push({MouseEvent::EventType::Move, x, y});
 		}
 
+		void Mouse::OnMouseMoveRaw(int x, int y)
+		{
+			this->_eventBuffer.push({ MouseEvent::EventType::RawMove, x, y });
+		}
+
 		bool Mouse::IsLeftDown() const
 		{
 			return this->_isLeftDown;

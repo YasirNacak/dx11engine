@@ -10,10 +10,12 @@ int APIENTRY wWinMain(
 	_In_ int			nCmdShow) {
 
 	s3d::Engine engine;
+	
 	engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720);
-	OutputDebugStringA("Hello World\n");
+
 	while (engine.ProcessMessages()) {
 		engine.Update();
 	}
+
 	return 0;
 }

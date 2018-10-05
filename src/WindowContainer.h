@@ -7,6 +7,7 @@ namespace s3d {
 	class WindowContainer
 	{
 	public:
+		WindowContainer();
 		LRESULT WindowProc(HWND hwnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	protected:
 		RenderWindow _renderWindow;
