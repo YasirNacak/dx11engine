@@ -95,46 +95,18 @@ namespace s3d { namespace graphics {
 
 	bool Graphics::InitializeShaders()
 	{
-		std::wstring shaderFolder;
-/*#pragma region DetermineShaderPath
-		if(IsDebuggerPresent() == TRUE)
-		{
-#ifdef _DEBUG
-#ifdef _WIN64
-			shaderFolder = L"..\\bin\\build\\x64\\Debug\\";
-#else
-			shaderFolder = L"..\\bin\\build\\Win32\\Debug\\";
-#endif
-#else
-#ifdef _WIN64
-			shaderFolder = L"..\\bin\\build\\x64\\Release\\";
-#else
-			shaderFolder = L"..\\bin\\build\\Win32\\Release\\";
-#endif
-#endif
-		}*/
-
-		char cCurrentPath[FILENAME_MAX];
-
-		if (!_getcwd(cCurrentPath, sizeof(cCurrentPath)))
-		{
-			return errno;
-		}
-
-		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-
-		OutputDebugStringA(cCurrentPath);
-
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
 			{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
-		if(!_vertexShader.Initialize(this->_device, shaderFolder + L"vertexshader.cso", layout, ARRAYSIZE(layout)))
+		if(!_vertexShader.Initialize(this->_device, L"vertexshader.cso", layout, ARRAYSIZE(layout)))
 		{
 			return false;
 		}
-		
+
+		// this wont stay like that
+
 		return true;
 	}
 } }
