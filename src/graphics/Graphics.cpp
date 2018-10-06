@@ -2,6 +2,7 @@
 #include <direct.h>
 #include <minwinbase.h>
 #include <minwinbase.h>
+#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -20,11 +21,13 @@ namespace s3d { namespace graphics {
 
 	void Graphics::RenderFrame()
 	{
-		float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f};
+		//float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
+		float bgColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
 
 		this->_deviceContext->IASetInputLayout(this->_vertexShader.GetInputLayout());
 		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		this->_deviceContext->RSSetState(this->_rasterizerState.Get());
 
 		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
 		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
@@ -118,6 +121,19 @@ namespace s3d { namespace graphics {
 
 		this->_deviceContext->RSSetViewports(1, &viewport);
 
+		D3D11_RASTERIZER_DESC rasterizerDesc;
+		ZeroMemory(&rasterizerDesc, sizeof D3D11_RASTERIZER_DESC);
+
+		rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+		rasterizerDesc.CullMode = D3D11_CULL_BACK;
+
+		hr = this->_device->CreateRasterizerState(&rasterizerDesc, this->_rasterizerState.GetAddressOf());
+		if(hr != S_OK)
+		{
+			utility::ErrorLogger::Log(hr, "Creating rasterizer state failed.");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -125,7 +141,8 @@ namespace s3d { namespace graphics {
 	{
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+			{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
 		if(!_vertexShader.Initialize(this->_device, L"vertexshader.cso", layout, ARRAYSIZE(layout)))
@@ -142,10 +159,9 @@ namespace s3d { namespace graphics {
 	bool Graphics::InitializeScene()
 	{
 		Vertex v[] = {
-			{0.0f, 0.0f},
-			{-0.1f, 0.0f},
-			{0.0f, 0.1f},
-			{0.1f, 0.0f},
+			{-0.5f, -0.5f, 1.0f},
+			{0.0f, 0.5f, 0.0f, 1.0f},
+			{0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
 		};
 
 		D3D11_BUFFER_DESC vertexBufferDesc;

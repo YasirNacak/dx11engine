@@ -25,5 +25,6 @@ namespace s3d { namespace graphics {
 		PixelShader _pixelShader;
 	
 		ComPtr<ID3D11Buffer> _vertexBuffer;
+		ComPtr<ID3D11RasterizerState> _rasterizerState;
 	};
 } }
