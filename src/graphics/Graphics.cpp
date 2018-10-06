@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include <direct.h>
 #include <minwinbase.h>
+#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -11,6 +12,9 @@ namespace s3d { namespace graphics {
 		if (!InitializeShaders())
 			return false;
 
+		if (!InitializeScene())
+			return false;
+
 		return true;
 	}
 
@@ -18,6 +22,19 @@ namespace s3d { namespace graphics {
 	{
 		float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f};
 		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
+
+		this->_deviceContext->IASetInputLayout(this->_vertexShader.GetInputLayout());
+		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
+		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
+
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
+		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
+
+		this->_deviceContext->Draw(4, 0);
+
 		this->_swapChain->Present(1, NULL);
 	}
 
@@ -96,8 +113,8 @@ namespace s3d { namespace graphics {
 
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.Width = width;
-		viewport.Height = height;
+		viewport.Width = static_cast<float>(width);
+		viewport.Height = static_cast<float>(height);
 
 		this->_deviceContext->RSSetViewports(1, &viewport);
 
@@ -118,6 +135,38 @@ namespace s3d { namespace graphics {
 			return false;
 
 		// this wont stay like that
+
+		return true;
+	}
+
+	bool Graphics::InitializeScene()
+	{
+		Vertex v[] = {
+			{0.0f, 0.0f},
+			{-0.1f, 0.0f},
+			{0.0f, 0.1f},
+			{0.1f, 0.0f},
+		};
+
+		D3D11_BUFFER_DESC vertexBufferDesc;
+		ZeroMemory(&vertexBufferDesc, sizeof D3D11_BUFFER_DESC);
+
+		vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v);
+		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = 0;
+		vertexBufferDesc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA vertexBufferData;
+		ZeroMemory(&vertexBufferData, sizeof D3D11_SUBRESOURCE_DATA);
+		vertexBufferData.pSysMem = v;
+
+		const auto hr = this->_device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->_vertexBuffer.GetAddressOf());
+		if(FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create vertex buffer.");
+			return false;
+		}
 
 		return true;
 	}
