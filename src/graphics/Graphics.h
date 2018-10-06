@@ -18,5 +18,6 @@ namespace s3d { namespace graphics {
 		ComPtr<IDXGISwapChain> _swapChain;
 		ComPtr<ID3D11RenderTargetView> _renderTargetView;
 		VertexShader _vertexShader;
+		PixelShader _pixelShader;
 	};
 } }

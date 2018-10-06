@@ -106,5 +106,8 @@
     <FxCompile Include="..\data\shader\vertexshader.hlsl">
       <Filter>data\shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\data\shader\pixelshader.hlsl">
+      <Filter>data\shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

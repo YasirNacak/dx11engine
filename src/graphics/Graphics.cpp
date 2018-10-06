@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include <direct.h>
+#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -90,6 +91,16 @@ namespace s3d { namespace graphics {
 
 		this->_deviceContext->OMSetRenderTargets(1, this->_renderTargetView.GetAddressOf(), NULL);
 
+		D3D11_VIEWPORT viewport;
+		ZeroMemory(&viewport, sizeof D3D11_VIEWPORT);
+
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		viewport.Width = width;
+		viewport.Height = height;
+
+		this->_deviceContext->RSSetViewports(1, &viewport);
+
 		return true;
 	}
 
@@ -101,9 +112,10 @@ namespace s3d { namespace graphics {
 		};
 
 		if(!_vertexShader.Initialize(this->_device, L"vertexshader.cso", layout, ARRAYSIZE(layout)))
-		{
 			return false;
-		}
+
+		if (!_pixelShader.Initialize(this->_device, L"pixelshader.cso"))
+			return false;
 
 		// this wont stay like that
 

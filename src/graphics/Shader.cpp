@@ -53,4 +53,38 @@ namespace s3d { namespace graphics
 	{
 		return this->_inputLayout.Get();
 	}
+
+	bool PixelShader::Initialize(ComPtr<ID3D11Device>& device, std::wstring shaderPath)
+	{
+		HRESULT hr = D3DReadFileToBlob(shaderPath.c_str(), this->_shaderBuffer.GetAddressOf());
+		if (FAILED(hr))
+		{
+			std::wstring errorMessage = L"Failed to load shader: ";
+			errorMessage += shaderPath;
+			utility::ErrorLogger::Log(hr, errorMessage);
+			return false;
+		}
+
+		hr = device->CreatePixelShader(this->_shaderBuffer.Get()->GetBufferPointer(),
+			this->_shaderBuffer->GetBufferSize(), NULL, this->_shader.GetAddressOf());
+		if (FAILED(hr))
+		{
+			std::wstring errorMessage = L"Failed to create pixel shader: ";
+			errorMessage += shaderPath;
+			utility::ErrorLogger::Log(hr, errorMessage);
+			return false;
+		}
+
+		return true;
+	}
+
+	ID3D11PixelShader* PixelShader::GetShader() const
+	{
+		return this->_shader.Get();
+	}
+
+	ID3D10Blob* PixelShader::GetBuffer() const
+	{
+		return this->_shaderBuffer.Get();
+	}
 } }
