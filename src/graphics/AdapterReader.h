@@ -7,24 +7,20 @@
 #include "wrl/client.h"
 #include <vector>
 
-namespace s3d
-{
-	namespace graphics
+namespace s3d { namespace graphics {
+	class AdapterData
 	{
-		class AdapterData
-		{
-		public:
-			AdapterData(IDXGIAdapter *pAdapter);
-			IDXGIAdapter *PAdapter;
-			DXGI_ADAPTER_DESC Description;
-		};
+	public:
+		AdapterData(IDXGIAdapter *pAdapter);
+		IDXGIAdapter *PAdapter;
+		DXGI_ADAPTER_DESC Description;
+	};
 
-		class AdapterReader
-		{
-		public:
-			static std::vector<AdapterData> GetAdapters();
-		private:
-			static std::vector<AdapterData> _adapters;
-		};
-	}
-}
+	class AdapterReader
+	{
+	public:
+		static std::vector<AdapterData> GetAdapters();
+	private:
+		static std::vector<AdapterData> _adapters;
+	};
+} }

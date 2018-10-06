@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -159,6 +159,7 @@
     <ClCompile Include="..\src\Engine.cpp" />
     <ClCompile Include="..\src\graphics\AdapterReader.cpp" />
     <ClCompile Include="..\src\graphics\Graphics.cpp" />
+    <ClCompile Include="..\src\graphics\Shader.cpp" />
     <ClCompile Include="..\src\input\Keyboard.cpp" />
     <ClCompile Include="..\src\input\KeyboardEvent.cpp" />
     <ClCompile Include="..\src\input\Mouse.cpp" />
@@ -173,6 +174,8 @@
     <ClInclude Include="..\src\Engine.h" />
     <ClInclude Include="..\src\graphics\AdapterReader.h" />
     <ClInclude Include="..\src\graphics\Graphics.h" />
+    <ClInclude Include="..\src\graphics\Shader.h" />
+    <ClInclude Include="..\src\graphics\Vertex.h" />
     <ClInclude Include="..\src\input\Keyboard.h" />
     <ClInclude Include="..\src\input\KeyboardEvent.h" />
     <ClInclude Include="..\src\input\Mouse.h" />
@@ -181,6 +184,18 @@
     <ClInclude Include="..\src\RenderWindow.h" />
     <ClInclude Include="..\src\utility\StringConverter.h" />
     <ClInclude Include="..\src\WindowContainer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\data\shader\vertexshader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,12 @@
     <Filter Include="src\graphics">
       <UniqueIdentifier>{e28b0d21-9cc3-4ac7-913b-16dd7f60347f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{caaa2ced-d762-49ad-869e-4f6024faaf1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data\shader">
+      <UniqueIdentifier>{9174d02c-d37a-4928-8e5d-17fa19a66cf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\input\Keyboard.cpp">
@@ -51,6 +57,9 @@
     <ClCompile Include="..\src\graphics\AdapterReader.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\graphics\Shader.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\input\Keyboard.h">
@@ -86,5 +95,16 @@
     <ClInclude Include="..\src\graphics\AdapterReader.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\graphics\Vertex.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\Shader.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\data\shader\vertexshader.hlsl">
+      <Filter>data\shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

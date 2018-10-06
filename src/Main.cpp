@@ -8,11 +8,17 @@ int APIENTRY wWinMain(
 	_In_ int			nCmdShow) {
 
 	s3d::Engine engine;
-	
-	engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720);
 
-	while (engine.ProcessMessages()) {
-		engine.Update();
+	if(engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720))
+	{
+		while (engine.ProcessMessages()) {
+			engine.Update();
+		}
+	}
+	else
+	{
+		s3d::utility::ErrorLogger::Log("Failed to initialize engine");
+		return -1;
 	}
 
 	return 0;
