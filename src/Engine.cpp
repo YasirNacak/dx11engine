@@ -13,7 +13,8 @@ namespace s3d {
 		{
 			return false;
 		}
-		if(_graphics.Initialize(this->_renderWindow.GetWindowHandle(), width, height))
+
+		if(!_graphics.Initialize(this->_renderWindow.GetWindowHandle(), width, height))
 		{
 			return false;
 		}

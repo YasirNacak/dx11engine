@@ -2,7 +2,7 @@
 
 namespace s3d { namespace graphics
 {
-	bool VertexShader::Initialize(ComPtr<ID3D11Device>& device, std::wstring shaderPath)
+	bool VertexShader::Initialize(ComPtr<ID3D11Device>& device, std::wstring shaderPath, D3D11_INPUT_ELEMENT_DESC *layoutDesc, UINT elementCount)
 	{
 		HRESULT hr = D3DReadFileToBlob(shaderPath.c_str(), this->_shaderBuffer.GetAddressOf());
 		if(FAILED(hr))
@@ -23,6 +23,19 @@ namespace s3d { namespace graphics
 			return false;
 		}
 
+		hr = device->CreateInputLayout(
+			layoutDesc,
+			elementCount,
+			this->_shaderBuffer->GetBufferPointer(),
+			this->_shaderBuffer->GetBufferSize(),
+			this->_inputLayout.GetAddressOf());
+
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create input layout");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -36,4 +49,8 @@ namespace s3d { namespace graphics
 		return this->_shaderBuffer.Get();
 	}
 
+	ID3D11InputLayout* VertexShader::GetInputLayout() const
+	{
+		return this->_inputLayout.Get();
+	}
 } }

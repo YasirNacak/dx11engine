@@ -17,7 +17,6 @@ namespace s3d { namespace graphics {
 		ComPtr<ID3D11DeviceContext> _deviceContext;
 		ComPtr<IDXGISwapChain> _swapChain;
 		ComPtr<ID3D11RenderTargetView> _renderTargetView;
-		ComPtr<ID3D11InputLayout> _inputLayout;
 		VertexShader _vertexShader;
 	};
 } }

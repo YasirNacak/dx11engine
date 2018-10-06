@@ -96,7 +96,7 @@ namespace s3d { namespace graphics {
 	bool Graphics::InitializeShaders()
 	{
 		std::wstring shaderFolder;
-#pragma region DetermineShaderPath
+/*#pragma region DetermineShaderPath
 		if(IsDebuggerPresent() == TRUE)
 		{
 #ifdef _DEBUG
@@ -112,7 +112,7 @@ namespace s3d { namespace graphics {
 			shaderFolder = L"..\\bin\\build\\Win32\\Release\\";
 #endif
 #endif
-		}
+		}*/
 
 		char cCurrentPath[FILENAME_MAX];
 
@@ -125,29 +125,16 @@ namespace s3d { namespace graphics {
 
 		OutputDebugStringA(cCurrentPath);
 
-		if(!_vertexShader.Initialize(this->_device, shaderFolder + L"vertexshader.cso"))
-		{
-			return false;
-		}
-
-		D3D11_INPUT_ELEMENT_DESC layout[] = 
+		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
 			{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
-		HRESULT hr = this->_device->CreateInputLayout(
-			layout,
-			ARRAYSIZE(layout),
-			this->_vertexShader.GetBuffer()->GetBufferPointer(),
-			this->_vertexShader.GetBuffer()->GetBufferSize(),
-			this->_inputLayout.GetAddressOf());
-
-		if(FAILED(hr))
+		if(!_vertexShader.Initialize(this->_device, shaderFolder + L"vertexshader.cso", layout, ARRAYSIZE(layout)))
 		{
-			utility::ErrorLogger::Log(hr, "Failed to create input layout");
 			return false;
 		}
-
+		
 		return true;
 	}
 } }
