@@ -157,6 +157,9 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
+		_spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->_deviceContext.Get());
+		_spriteFont = std::make_unique<DirectX::SpriteFont>(this->_device.Get(), L"data\\typeface\\argentum_sans_regular_16.spritefont");
+
 		return true;
 	}
 
@@ -183,6 +186,10 @@ namespace s3d { namespace graphics {
 		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer2.GetAddressOf(), &stride, &offset);
 		this->_deviceContext->Draw(3, 0);
 
+		_spriteBatch->Begin();
+		_spriteFont->DrawString(_spriteBatch.get(), L"dx11engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::Aquamarine, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+		_spriteBatch->End();
+
 		this->_swapChain->Present(1, NULL);
 	}
 
@@ -194,10 +201,10 @@ namespace s3d { namespace graphics {
 			{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
-		if(!_vertexShader.Initialize(this->_device, L"vertexshader.cso", layout, ARRAYSIZE(layout)))
+		if(!_vertexShader.Initialize(this->_device, L"data\\shader\\vertexshader.cso", layout, ARRAYSIZE(layout)))
 			return false;
 
-		if (!_pixelShader.Initialize(this->_device, L"pixelshader.cso"))
+		if (!_pixelShader.Initialize(this->_device, L"data\\shader\\pixelshader.cso"))
 			return false;
 
 		// this wont stay like that

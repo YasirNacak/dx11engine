@@ -19,6 +19,9 @@
     <Filter Include="data\shader">
       <UniqueIdentifier>{9174d02c-d37a-4928-8e5d-17fa19a66cf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data\typeface">
+      <UniqueIdentifier>{f8c1fb49-3d9f-47ab-9ad5-32cc9f13b610}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\input\Keyboard.cpp">
@@ -109,5 +112,13 @@
     <FxCompile Include="..\data\shader\pixelshader.hlsl">
       <Filter>data\shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\data\typeface\argentum_sans_bold_16.spritefont">
+      <Filter>data\typeface</Filter>
+    </None>
+    <None Include="..\data\typeface\argentum_sans_regular_16.spritefont">
+      <Filter>data\typeface</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 #include "AdapterReader.h"
 #include "Shader.h"
 #include "Vertex.h"
+#include <SpriteBatch.h>
+#include <SpriteFont.h>
 
 using Microsoft::WRL::ComPtr;
 
@@ -32,5 +34,8 @@ namespace s3d { namespace graphics {
 		ComPtr<ID3D11DepthStencilState> _depthStencilState;
 
 		ComPtr<ID3D11RasterizerState> _rasterizerState;
+
+		std::unique_ptr<DirectX::SpriteBatch> _spriteBatch;
+		std::unique_ptr<DirectX::SpriteFont> _spriteFont;
 	};
 } }
