@@ -25,6 +25,12 @@ namespace s3d { namespace graphics {
 		PixelShader _pixelShader;
 	
 		ComPtr<ID3D11Buffer> _vertexBuffer;
+		ComPtr<ID3D11Buffer> _vertexBuffer2;
+
+		ComPtr<ID3D11DepthStencilView> _depthStencilView;
+		ComPtr<ID3D11Texture2D> _depthStencilBuffer;
+		ComPtr<ID3D11DepthStencilState> _depthStencilState;
+
 		ComPtr<ID3D11RasterizerState> _rasterizerState;
 	};
 } }

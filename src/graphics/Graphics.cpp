@@ -3,6 +3,7 @@
 #include <minwinbase.h>
 #include <minwinbase.h>
 #include <minwinbase.h>
+#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -17,28 +18,6 @@ namespace s3d { namespace graphics {
 			return false;
 
 		return true;
-	}
-
-	void Graphics::RenderFrame()
-	{
-		//float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
-		float bgColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
-		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
-
-		this->_deviceContext->IASetInputLayout(this->_vertexShader.GetInputLayout());
-		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		this->_deviceContext->RSSetState(this->_rasterizerState.Get());
-
-		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
-		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
-
-		UINT stride = sizeof(Vertex);
-		UINT offset = 0;
-		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
-
-		this->_deviceContext->Draw(4, 0);
-
-		this->_swapChain->Present(1, NULL);
 	}
 
 	bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
@@ -109,7 +88,49 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		this->_deviceContext->OMSetRenderTargets(1, this->_renderTargetView.GetAddressOf(), NULL);
+		D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+
+		depthStencilBufferDesc.Width = width;
+		depthStencilBufferDesc.Height = height;
+		depthStencilBufferDesc.MipLevels = 1;
+		depthStencilBufferDesc.ArraySize = 1;
+		depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilBufferDesc.SampleDesc.Count = 1;
+		depthStencilBufferDesc.SampleDesc.Quality = 0;
+		depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthStencilBufferDesc.CPUAccessFlags = 0;
+		depthStencilBufferDesc.MiscFlags = 0;
+
+		hr = this->_device->CreateTexture2D(&depthStencilBufferDesc, NULL, this->_depthStencilBuffer.GetAddressOf());
+		if(FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Creating depth stencil buffer failed.");
+			return false;
+		}
+
+		hr = this->_device->CreateDepthStencilView(this->_depthStencilBuffer.Get(), NULL, this->_depthStencilView.GetAddressOf());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Creating depth stencil view failed.");
+			return false;
+		}
+
+		this->_deviceContext->OMSetRenderTargets(1, this->_renderTargetView.GetAddressOf(), this->_depthStencilView.Get());
+
+		D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
+		ZeroMemory(&depthStencilStateDesc, sizeof D3D11_DEPTH_STENCIL_DESC);
+
+		depthStencilStateDesc.DepthEnable = true;
+		depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+		hr = this->_device->CreateDepthStencilState(&depthStencilStateDesc, this->_depthStencilState.GetAddressOf());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Creating depth stencil state failed.");
+			return false;
+		}
 
 		D3D11_VIEWPORT viewport;
 		ZeroMemory(&viewport, sizeof D3D11_VIEWPORT);
@@ -118,6 +139,8 @@ namespace s3d { namespace graphics {
 		viewport.TopLeftY = 0;
 		viewport.Width = static_cast<float>(width);
 		viewport.Height = static_cast<float>(height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
 
 		this->_deviceContext->RSSetViewports(1, &viewport);
 
@@ -137,11 +160,37 @@ namespace s3d { namespace graphics {
 		return true;
 	}
 
+	void Graphics::RenderFrame()
+	{
+		//float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
+		float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
+		this->_deviceContext->ClearDepthStencilView(this->_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		this->_deviceContext->IASetInputLayout(this->_vertexShader.GetInputLayout());
+		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		this->_deviceContext->RSSetState(this->_rasterizerState.Get());
+		this->_deviceContext->OMSetDepthStencilState(this->_depthStencilState.Get(), 0);
+		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
+		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
+
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
+
+		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
+		this->_deviceContext->Draw(3, 0);
+
+		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer2.GetAddressOf(), &stride, &offset);
+		this->_deviceContext->Draw(3, 0);
+
+		this->_swapChain->Present(1, NULL);
+	}
+
 	bool Graphics::InitializeShaders()
 	{
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
@@ -156,12 +205,15 @@ namespace s3d { namespace graphics {
 		return true;
 	}
 
+	// This method is being used for testing purposes only.
+	// It is going to change completely in future.
 	bool Graphics::InitializeScene()
 	{
+		// FIRST TRI
 		Vertex v[] = {
-			{-0.5f, -0.5f, 1.0f},
-			{0.0f, 0.5f, 0.0f, 1.0f},
-			{0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
+			{-0.5f, -0.5f, 1.0f, 1.0f},
+			{ 0.0f,  0.5f, 1.0f, 1.0f},
+			{ 0.5f, -0.5f, 1.0f, 1.0f},
 		};
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
@@ -177,8 +229,33 @@ namespace s3d { namespace graphics {
 		ZeroMemory(&vertexBufferData, sizeof D3D11_SUBRESOURCE_DATA);
 		vertexBufferData.pSysMem = v;
 
-		const auto hr = this->_device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->_vertexBuffer.GetAddressOf());
+		HRESULT hr = this->_device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->_vertexBuffer.GetAddressOf());
 		if(FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create vertex buffer.");
+			return false;
+		}
+
+		// SECOND TRI
+		Vertex v2[] = {
+			{-0.25f, -0.25f, 0.0f, 0.0f, 1.0f},
+			{ 0.0f,   0.25f, 0.0f, 0.0f, 1.0f},
+			{ 0.25f, -0.25f, 0.0f, 0.0f, 1.0f},
+		};
+
+		ZeroMemory(&vertexBufferDesc, sizeof D3D11_BUFFER_DESC);
+
+		vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v2);
+		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = 0;
+		vertexBufferDesc.MiscFlags = 0;
+
+		ZeroMemory(&vertexBufferData, sizeof D3D11_SUBRESOURCE_DATA);
+		vertexBufferData.pSysMem = v2;
+
+		hr = this->_device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->_vertexBuffer2.GetAddressOf());
+		if (FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Failed to create vertex buffer.");
 			return false;
