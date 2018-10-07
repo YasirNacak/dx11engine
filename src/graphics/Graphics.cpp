@@ -1,9 +1,5 @@
 #include "Graphics.h"
 #include <direct.h>
-#include <minwinbase.h>
-#include <minwinbase.h>
-#include <minwinbase.h>
-#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -219,8 +215,8 @@ namespace s3d { namespace graphics {
 		// FIRST TRI
 		Vertex v[] = {
 			{-0.5f, -0.5f, 1.0f, 1.0f},
-			{ 0.0f,  0.5f, 1.0f, 1.0f},
-			{ 0.5f, -0.5f, 1.0f, 1.0f},
+			{ 0.0f,  0.5f, 1.0f, 0.0f, 1.0f},
+			{ 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f},
 		};
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
@@ -245,9 +241,9 @@ namespace s3d { namespace graphics {
 
 		// SECOND TRI
 		Vertex v2[] = {
-			{-0.25f, -0.25f, 0.0f, 0.0f, 1.0f},
+			{-0.25f, -0.25f, 0.0f, 1.0f},
 			{ 0.0f,   0.25f, 0.0f, 0.0f, 1.0f},
-			{ 0.25f, -0.25f, 0.0f, 0.0f, 1.0f},
+			{ 0.25f, -0.25f, 0.0f, 0.0f, 0.0f, 1.0f},
 		};
 
 		ZeroMemory(&vertexBufferDesc, sizeof D3D11_BUFFER_DESC);

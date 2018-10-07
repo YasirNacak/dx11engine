@@ -9,7 +9,7 @@ int APIENTRY wWinMain(
 
 	s3d::Engine engine;
 
-	if(engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 800, 600))
+	if(engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720))
 	{
 		while (engine.ProcessMessages()) {
 			engine.Update();

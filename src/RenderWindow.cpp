@@ -19,6 +19,17 @@ namespace s3d {
 
 		this->RegisterWindowClass();
 
+		int screenCenterX = GetSystemMetrics(SM_CXSCREEN) / 2 - this->_width / 2;
+		int screenCenterY = GetSystemMetrics(SM_CYSCREEN) / 2 - this->_height / 2;
+
+		RECT windowRect;
+		windowRect.left = screenCenterX;
+		windowRect.top = screenCenterY;
+		windowRect.right = windowRect.left + this->_width;
+		windowRect.bottom = windowRect.top + this->_height;
+
+		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
 		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-createwindowexa
 		this->_handle =
 			CreateWindowEx(
@@ -26,10 +37,10 @@ namespace s3d {
 				this->_windowClassWide.c_str(),
 				this->_windowTitleWide.c_str(),
 				WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-				0,
-				0,
-				this->_width,
-				this->_height,
+				windowRect.left,
+				windowRect.top,
+				windowRect.right - windowRect.left,
+				windowRect.bottom - windowRect.top,
 				NULL,
 				NULL,
 				this->_hInstance,
