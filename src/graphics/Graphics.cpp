@@ -198,7 +198,8 @@ namespace s3d { namespace graphics {
 
 		this->_deviceContext->PSSetShaderResources(0, 1, this->_exampleTexture.GetAddressOf());
 		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
-		this->_deviceContext->Draw(6, 0);
+		this->_deviceContext->IASetIndexBuffer(this->_indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		this->_deviceContext->DrawIndexed(6, 0, 0);
 
 		_spriteBatch->Begin();
 		_spriteFont->DrawString(_spriteBatch.get(), L"dx11engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::Aquamarine, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
@@ -233,12 +234,13 @@ namespace s3d { namespace graphics {
 			{-0.5f, -0.5f, 1.0f, 0.0f, 1.0f},
 			{-0.5f,  0.5f, 1.0f, 0.0f, 0.0f},
 			{ 0.5f,  0.5f, 1.0f, 1.0f, 0.0f},
-
-			{-0.5f, -0.5f, 1.0f, 0.0f, 1.0f},
-			{ 0.5f,  0.5f, 1.0f, 1.0f, 0.0f},
 			{ 0.5f, -0.5f, 1.0f, 1.0f, 1.0f},
 		};
 
+		DWORD indices[] = {
+			0, 1, 2,
+			0, 2, 3, 
+		};
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof D3D11_BUFFER_DESC);
 
@@ -256,6 +258,24 @@ namespace s3d { namespace graphics {
 		if(FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Failed to create vertex buffer.");
+			return false;
+		}
+
+		D3D11_BUFFER_DESC indicesBufferDesc;
+		ZeroMemory(&indicesBufferDesc, sizeof D3D11_BUFFER_DESC);
+
+		indicesBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		indicesBufferDesc.ByteWidth = sizeof(DWORD) * ARRAYSIZE(indices);
+		indicesBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		indicesBufferDesc.CPUAccessFlags = 0;
+		indicesBufferDesc.MiscFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA indicesBufferData;
+		indicesBufferData.pSysMem = indices;
+		hr = this->_device->CreateBuffer(&indicesBufferDesc, &indicesBufferData, this->_indicesBuffer.GetAddressOf());
+		if(FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create indices buffer.");
 			return false;
 		}
 
