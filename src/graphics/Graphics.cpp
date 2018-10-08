@@ -27,7 +27,6 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		// https://docs.microsoft.com/en-us/windows/desktop/api/dxgi/ns-dxgi-dxgi_swap_chain_desc
 		DXGI_SWAP_CHAIN_DESC scd;
 		ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -49,7 +48,6 @@ namespace s3d { namespace graphics {
 		scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-		// https://docs.microsoft.com/en-us/windows/desktop/api/d3d11/nf-d3d11-d3d11createdeviceandswapchain
 		auto hr = D3D11CreateDeviceAndSwapChain(
 			adapters[0].PAdapter,
 			D3D_DRIVER_TYPE_UNKNOWN,

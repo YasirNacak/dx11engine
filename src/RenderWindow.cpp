@@ -19,8 +19,8 @@ namespace s3d {
 
 		this->RegisterWindowClass();
 
-		int screenCenterX = GetSystemMetrics(SM_CXSCREEN) / 2 - this->_width / 2;
-		int screenCenterY = GetSystemMetrics(SM_CYSCREEN) / 2 - this->_height / 2;
+		const int screenCenterX = GetSystemMetrics(SM_CXSCREEN) / 2 - this->_width / 2;
+		const int screenCenterY = GetSystemMetrics(SM_CYSCREEN) / 2 - this->_height / 2;
 
 		RECT windowRect;
 		windowRect.left = screenCenterX;
@@ -30,7 +30,6 @@ namespace s3d {
 
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-createwindowexa
 		this->_handle =
 			CreateWindowEx(
 				0,
@@ -61,10 +60,8 @@ namespace s3d {
 	bool RenderWindow::ProcessMessages() {
 		MSG message;
 
-		// https://msdn.microsoft.com/en-us/library/windows/desktop/aa366920(v=vs.85).aspx
 		ZeroMemory(&message, sizeof(MSG));
 
-		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-peekmessagea
 		while (PeekMessage(
 			&message,
 			this->_handle,
@@ -93,8 +90,6 @@ namespace s3d {
 	}
 
 	RenderWindow::~RenderWindow() {
-		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-unregisterclassa
-		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-destroywindow
 		if (this->_handle) {
 			UnregisterClass(this->_windowClassWide.c_str(), this->_hInstance);
 			DestroyWindow(this->_handle);
@@ -122,14 +117,12 @@ namespace s3d {
 		{
 		case WM_NCCREATE:
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagcreatestructw
 			const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-			WindowContainer *pWindow = reinterpret_cast<WindowContainer*>(pCreate->lpCreateParams);
+			auto *pWindow = reinterpret_cast<WindowContainer*>(pCreate->lpCreateParams);
 			if (pWindow == nullptr) {
 				utility::ErrorLogger::Log("Pointer to window container is null during WM_NCCREATE.");
 				exit(-1);
 			}
-			// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-setwindowlongptra
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWindow));
 			SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(HandleMessageRedirect));
 			return pWindow->WindowProc(hwnd, uMessage, wParam, lParam);
@@ -143,8 +136,6 @@ namespace s3d {
 
 	void RenderWindow::RegisterWindowClass() const
 	{
-		// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagwndclassexa
-
 		WNDCLASSEX windowClass;
 
 		windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;

@@ -6,7 +6,6 @@ namespace s3d {
 		static auto isRawInputInitialized = false;
 		if(!isRawInputInitialized)
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/ns-winuser-tagrawinputdevice
 			RAWINPUTDEVICE rid;
 
 			rid.usUsagePage = 0x01;
@@ -35,7 +34,6 @@ namespace s3d {
 		{
 		case WM_KEYDOWN:
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-keydown
 			const auto keycode = static_cast<unsigned char>(wParam);
 			if(_keyboard.IsKeysAutoRepeat())
 			{
@@ -53,14 +51,12 @@ namespace s3d {
 		}
 		case WM_KEYUP:
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-keyup
 			const auto keycode = static_cast<unsigned char>(wParam);
 			_keyboard.OnKeyReleased(keycode);
 			return 0;
 		}
 		case WM_CHAR:
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-char
 			const auto ch = static_cast<unsigned char>(wParam);
 			if(_keyboard.IsCharsAutoRepeat())
 			{
@@ -123,7 +119,6 @@ namespace s3d {
 		}
 		case WM_INPUT:
 		{
-			// https://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-input
 			UINT dataSize;
 			GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, 0, &dataSize, sizeof(RAWINPUTHEADER));
 			if(dataSize > 0)
