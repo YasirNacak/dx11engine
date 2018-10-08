@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include <direct.h>
+#include <minwinbase.h>
 
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
@@ -156,6 +157,24 @@ namespace s3d { namespace graphics {
 		_spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->_deviceContext.Get());
 		_spriteFont = std::make_unique<DirectX::SpriteFont>(this->_device.Get(), L"data\\typeface\\argentum_sans_regular_16.spritefont");
 
+		D3D11_SAMPLER_DESC samplerDesc;
+		ZeroMemory(&samplerDesc, sizeof D3D11_SAMPLER_DESC);
+
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		samplerDesc.MinLOD = 0;
+		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		hr = this->_device->CreateSamplerState(&samplerDesc, this->_samplerState.GetAddressOf());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Creating sampler state failed.");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -170,17 +189,16 @@ namespace s3d { namespace graphics {
 		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		this->_deviceContext->RSSetState(this->_rasterizerState.Get());
 		this->_deviceContext->OMSetDepthStencilState(this->_depthStencilState.Get(), 0);
+		this->_deviceContext->PSSetSamplers(0, 1, this->_samplerState.GetAddressOf());
 		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
 		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
 
 		UINT stride = sizeof(Vertex);
 		UINT offset = 0;
 
+		this->_deviceContext->PSSetShaderResources(0, 1, this->_exampleTexture.GetAddressOf());
 		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset);
-		this->_deviceContext->Draw(3, 0);
-
-		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer2.GetAddressOf(), &stride, &offset);
-		this->_deviceContext->Draw(3, 0);
+		this->_deviceContext->Draw(6, 0);
 
 		_spriteBatch->Begin();
 		_spriteFont->DrawString(_spriteBatch.get(), L"dx11engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::Aquamarine, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
@@ -194,7 +212,7 @@ namespace s3d { namespace graphics {
 		D3D11_INPUT_ELEMENT_DESC layout[] =
 		{
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
 		if(!_vertexShader.Initialize(this->_device, L"data\\shader\\vertexshader.cso", layout, ARRAYSIZE(layout)))
@@ -203,8 +221,6 @@ namespace s3d { namespace graphics {
 		if (!_pixelShader.Initialize(this->_device, L"data\\shader\\pixelshader.cso"))
 			return false;
 
-		// this wont stay like that
-
 		return true;
 	}
 
@@ -212,11 +228,15 @@ namespace s3d { namespace graphics {
 	// It is going to change completely in future.
 	bool Graphics::InitializeScene()
 	{
-		// FIRST TRI
+		// QUAD
 		Vertex v[] = {
-			{-0.5f, -0.5f, 1.0f, 1.0f},
-			{ 0.0f,  0.5f, 1.0f, 0.0f, 1.0f},
-			{ 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f},
+			{-0.5f, -0.5f, 1.0f, 0.0f, 1.0f},
+			{-0.5f,  0.5f, 1.0f, 0.0f, 0.0f},
+			{ 0.5f,  0.5f, 1.0f, 1.0f, 0.0f},
+
+			{-0.5f, -0.5f, 1.0f, 0.0f, 1.0f},
+			{ 0.5f,  0.5f, 1.0f, 1.0f, 0.0f},
+			{ 0.5f, -0.5f, 1.0f, 1.0f, 1.0f},
 		};
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
@@ -239,28 +259,10 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		// SECOND TRI
-		Vertex v2[] = {
-			{-0.25f, -0.25f, 0.0f, 1.0f},
-			{ 0.0f,   0.25f, 0.0f, 0.0f, 1.0f},
-			{ 0.25f, -0.25f, 0.0f, 0.0f, 0.0f, 1.0f},
-		};
-
-		ZeroMemory(&vertexBufferDesc, sizeof D3D11_BUFFER_DESC);
-
-		vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v2);
-		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDesc.CPUAccessFlags = 0;
-		vertexBufferDesc.MiscFlags = 0;
-
-		ZeroMemory(&vertexBufferData, sizeof D3D11_SUBRESOURCE_DATA);
-		vertexBufferData.pSysMem = v2;
-
-		hr = this->_device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->_vertexBuffer2.GetAddressOf());
-		if (FAILED(hr))
+		hr = DirectX::CreateWICTextureFromFile(this->_device.Get(), L"data\\graphic\\texture\\simple_pattern.png", nullptr, _exampleTexture.GetAddressOf());
+		if(FAILED(hr))
 		{
-			utility::ErrorLogger::Log(hr, "Failed to create vertex buffer.");
+			utility::ErrorLogger::Log(hr, "Failed to create WIC texture from file buffer.");
 			return false;
 		}
 

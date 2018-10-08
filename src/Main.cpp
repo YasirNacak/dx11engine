@@ -7,8 +7,14 @@ int APIENTRY wWinMain(
 	_In_ LPWSTR			lpCmdLine,
 	_In_ int			nCmdShow) {
 
-	s3d::Engine engine;
+	HRESULT hr = CoInitialize(NULL);
+	if(FAILED(hr))
+	{
+		s3d::utility::ErrorLogger::Log("Failed to call CoInitialize.");
+		return -1;
+	}
 
+	s3d::Engine engine;
 	if(engine.Initialize(hInstance, "dx11Engine", "dx11EngineWinClass", 1280, 720))
 	{
 		while (engine.ProcessMessages()) {

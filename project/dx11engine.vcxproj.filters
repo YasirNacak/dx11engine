@@ -22,6 +22,12 @@
     <Filter Include="data\typeface">
       <UniqueIdentifier>{f8c1fb49-3d9f-47ab-9ad5-32cc9f13b610}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data\graphic">
+      <UniqueIdentifier>{eb960f1c-5f10-4227-b065-549b109bdf57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data\graphic\texture">
+      <UniqueIdentifier>{7cbdc345-2a6c-457d-a538-b83b578b348c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\input\Keyboard.cpp">
@@ -120,5 +126,10 @@
     <None Include="..\data\typeface\argentum_sans_regular_16.spritefont">
       <Filter>data\typeface</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\data\graphic\texture\simple_pattern.png">
+      <Filter>data\graphic\texture</Filter>
+    </Image>
   </ItemGroup>
 </Project>

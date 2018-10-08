@@ -4,6 +4,7 @@
 #include "Vertex.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
+#include <WICTextureLoader.h>
 
 using Microsoft::WRL::ComPtr;
 
@@ -27,7 +28,6 @@ namespace s3d { namespace graphics {
 		PixelShader _pixelShader;
 	
 		ComPtr<ID3D11Buffer> _vertexBuffer;
-		ComPtr<ID3D11Buffer> _vertexBuffer2;
 
 		ComPtr<ID3D11DepthStencilView> _depthStencilView;
 		ComPtr<ID3D11Texture2D> _depthStencilBuffer;
@@ -37,5 +37,8 @@ namespace s3d { namespace graphics {
 
 		std::unique_ptr<DirectX::SpriteBatch> _spriteBatch;
 		std::unique_ptr<DirectX::SpriteFont> _spriteFont;
+
+		ComPtr<ID3D11SamplerState> _samplerState;
+		ComPtr<ID3D11ShaderResourceView> _exampleTexture;
 	};
 } }

@@ -231,6 +231,9 @@
     <None Include="..\data\typeface\argentum_sans_bold_16.spritefont" />
     <None Include="..\data\typeface\argentum_sans_regular_16.spritefont" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\data\graphic\texture\simple_pattern.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

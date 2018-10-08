@@ -1,10 +1,14 @@
 struct PS_INPUT
 {
     float4 pos : SV_POSITION;
-    float3 col : COLOR;
+    float2 texCoord : TEXCOORD;
 };
+
+Texture2D mainTexture : TEXTURE : register(t0);
+SamplerState mainSamplerState : SAMPLER : register(s0);
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    return float4(input.col, 1.0f);
+    float3 col = mainTexture.Sample(mainSamplerState, input.texCoord);
+    return float4(col, 1.0f);
 }
