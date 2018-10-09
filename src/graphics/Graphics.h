@@ -2,9 +2,11 @@
 #include "AdapterReader.h"
 #include "Shader.h"
 #include "Vertex.h"
+#include "VertexBuffer.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
+#include "IndexBuffer.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -27,8 +29,8 @@ namespace s3d { namespace graphics {
 		VertexShader _vertexShader;
 		PixelShader _pixelShader;
 	
-		ComPtr<ID3D11Buffer> _vertexBuffer;
-		ComPtr<ID3D11Buffer> _indicesBuffer;
+		VertexBuffer<Vertex> _vertexBuffer;
+		IndexBuffer _indexBuffer;
 
 		ComPtr<ID3D11DepthStencilView> _depthStencilView;
 		ComPtr<ID3D11Texture2D> _depthStencilBuffer;

@@ -186,8 +186,10 @@
     <ClInclude Include="..\src\Engine.h" />
     <ClInclude Include="..\src\graphics\AdapterReader.h" />
     <ClInclude Include="..\src\graphics\Graphics.h" />
+    <ClInclude Include="..\src\graphics\IndexBuffer.h" />
     <ClInclude Include="..\src\graphics\Shader.h" />
     <ClInclude Include="..\src\graphics\Vertex.h" />
+    <ClInclude Include="..\src\graphics\VertexBuffer.h" />
     <ClInclude Include="..\src\input\Keyboard.h" />
     <ClInclude Include="..\src\input\KeyboardEvent.h" />
     <ClInclude Include="..\src\input\Mouse.h" />
