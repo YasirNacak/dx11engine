@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="..\src\Engine.h" />
     <ClInclude Include="..\src\graphics\AdapterReader.h" />
+    <ClInclude Include="..\src\graphics\ConstantBuffer.h" />
+    <ClInclude Include="..\src\graphics\ConstantBufferTypes.h" />
     <ClInclude Include="..\src\graphics\Graphics.h" />
     <ClInclude Include="..\src\graphics\IndexBuffer.h" />
     <ClInclude Include="..\src\graphics\Shader.h" />

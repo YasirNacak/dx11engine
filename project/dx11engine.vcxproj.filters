@@ -116,6 +116,12 @@
     <ClInclude Include="..\src\graphics\IndexBuffer.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\graphics\ConstantBufferTypes.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\ConstantBuffer.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\data\shader\vertexshader.hlsl">

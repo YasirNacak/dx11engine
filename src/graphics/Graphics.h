@@ -7,6 +7,7 @@
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
 #include "IndexBuffer.h"
+#include "ConstantBuffer.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -28,7 +29,8 @@ namespace s3d { namespace graphics {
 		
 		VertexShader _vertexShader;
 		PixelShader _pixelShader;
-	
+
+		ConstantBuffer<CB_VS_vertexshader> _constantBuffer;
 		VertexBuffer<Vertex> _vertexBuffer;
 		IndexBuffer _indexBuffer;
 

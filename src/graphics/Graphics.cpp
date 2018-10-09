@@ -193,6 +193,16 @@ namespace s3d { namespace graphics {
 
 		UINT offset = 0;
 
+		static float yOff = 0.5f;
+		yOff -= 0.001f;
+		_constantBuffer.Data.xOffset = 0.0f;
+		_constantBuffer.Data.yOffset = yOff;
+		if(!_constantBuffer.ApplyChanges())
+		{
+			return;
+		}
+		this->_deviceContext->VSSetConstantBuffers(0, 1, this->_constantBuffer.GetBufferAddress());
+
 		this->_deviceContext->PSSetShaderResources(0, 1, this->_exampleTexture.GetAddressOf());
 		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetBufferAddress(), _vertexBuffer.GetStridePtr(), &offset);
 		this->_deviceContext->IASetIndexBuffer(this->_indexBuffer.GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
@@ -258,6 +268,14 @@ namespace s3d { namespace graphics {
 		if(FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Failed to create WIC texture from file buffer.");
+			return false;
+		}
+
+
+		hr = this->_constantBuffer.Initialize(this->_device.Get(), this->_deviceContext.Get());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create constant buffer.");
 			return false;
 		}
 
