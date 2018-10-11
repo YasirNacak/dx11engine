@@ -193,11 +193,9 @@ namespace s3d { namespace graphics {
 
 		UINT offset = 0;
 
-		static float yOff = 0.5f;
-		yOff -= 0.001f;
-		_constantBuffer.Data.xOffset = 0.0f;
-		_constantBuffer.Data.yOffset = yOff;
-		if(!_constantBuffer.ApplyChanges())
+		this->_constantBuffer.Data.mat4 = DirectX::XMMatrixScaling(1.52f, 0.5f, 0.0f);
+		this->_constantBuffer.Data.mat4 = DirectX::XMMatrixTranspose(this->_constantBuffer.Data.mat4);
+		if(!this->_constantBuffer.ApplyChanges())
 		{
 			return;
 		}
