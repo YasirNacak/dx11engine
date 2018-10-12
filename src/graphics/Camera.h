@@ -29,6 +29,8 @@ namespace s3d { namespace graphics {
 		void AdjustRotation(const XMVECTOR& rotation);
 		void AdjustRotation(float x, float y, float z);
 
+		void SetLookAtPosition(XMFLOAT3 lookAtPosition);
+
 		const XMVECTOR DefaultForwardVector = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 		const XMVECTOR DefaultUpVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	private:

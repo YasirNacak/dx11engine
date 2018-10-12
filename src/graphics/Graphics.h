@@ -18,6 +18,9 @@ namespace s3d { namespace graphics {
 	public:
 		bool Initialize(HWND hwnd, int width, int height);
 		void RenderFrame();
+
+		Camera MainCamera;
+
 	private:
 		bool InitializeDirectX(HWND hwnd);
 		bool InitializeShaders();
@@ -49,7 +52,5 @@ namespace s3d { namespace graphics {
 
 		int _windowWidth;
 		int _windowHeight;
-
-		Camera _mainCamera;
 	};
 } }

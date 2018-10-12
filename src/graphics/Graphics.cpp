@@ -183,8 +183,7 @@ namespace s3d { namespace graphics {
 
 	void Graphics::RenderFrame()
 	{
-		//float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
-		float bgColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
 		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
 		this->_deviceContext->ClearDepthStencilView(this->_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -199,8 +198,9 @@ namespace s3d { namespace graphics {
 		UINT offset = 0;
 
 		XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
-		_mainCamera.AdjustPosition(0.0f, 0.01f, 0.0f);
-		this->_constantBuffer.Data.mat4 = worldMatrix * _mainCamera.GetViewMatrix() * _mainCamera.GetProjectionMatrix();
+		MainCamera.AdjustPosition(0.01f, 0.01f, 0.0f);
+		MainCamera.SetLookAtPosition({0.0f, 0.0f, 0.0f});
+		this->_constantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
 		this->_constantBuffer.Data.mat4 = XMMatrixTranspose(this->_constantBuffer.Data.mat4);
 		if(!this->_constantBuffer.ApplyChanges())
 		{
@@ -285,8 +285,8 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		_mainCamera.SetPosition(0.0f, 0.0f, -2.0f);
-		_mainCamera.SetProjectionValues(90, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 1000.0f);
+		MainCamera.SetPosition(0.0f, 0.0f, -2.0f);
+		MainCamera.SetProjectionValues(90, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 1000.0f);
 
 		return true;
 	}

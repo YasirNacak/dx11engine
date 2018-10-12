@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include <cmath>
+#include <complex>
 
 namespace s3d { namespace graphics
 {
@@ -110,6 +112,36 @@ namespace s3d { namespace graphics
 		this->_rotationVector = XMLoadFloat3(&this->_rotation);
 	}
 
+	void Camera::SetLookAtPosition(XMFLOAT3 lookAtPosition)
+	{
+		if (lookAtPosition.x == this->_position.x &&
+			lookAtPosition.y == this->_position.y &&
+			lookAtPosition.z == this->_position.z)
+			return;
+
+		lookAtPosition.x = this->_position.x - lookAtPosition.x;
+		lookAtPosition.y = this->_position.y - lookAtPosition.y;
+		lookAtPosition.z = this->_position.z - lookAtPosition.z;
+
+		float pitch = 0.0f;
+		if (lookAtPosition.y != 0.0f)
+		{
+			const float distance = sqrt(lookAtPosition.x * lookAtPosition.x + lookAtPosition.z * lookAtPosition.z);
+			pitch = atan(lookAtPosition.y / distance);
+		}
+
+		float yaw = 0.0f;
+		if (lookAtPosition.x != 0.0f)
+		{
+			yaw = atan(lookAtPosition.x / lookAtPosition.z);
+		}
+
+		if (lookAtPosition.z > 0)
+			yaw += DirectX::XM_PI;
+
+		this->SetRotation(pitch, yaw, 0.0f);
+	}
+
 	void Camera::UpdateViewMatrix()
 	{
 		XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(this->_rotation.x, this->_rotation.y, this->_rotation.z);
@@ -119,4 +151,4 @@ namespace s3d { namespace graphics
 		XMVECTOR upDirection = XMVector3TransformCoord(this->DefaultUpVector, rotationMatrix);
 		this->_viewMatrix = DirectX::XMMatrixLookAtLH(this->_positionVector, target, upDirection);
 	}
-}}
+} }
