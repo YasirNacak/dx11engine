@@ -198,21 +198,10 @@ namespace s3d { namespace graphics {
 
 		UINT offset = 0;
 
-		DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
-		static DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
-		static DirectX::XMVECTOR focusPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		static DirectX::XMVECTOR upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
-
-		float fovDegrees = 90.0f;
-		float fovRadians = (fovDegrees / 360.0f) * DirectX::XM_2PI;
-		float aspectRatio = static_cast<float>(this->_windowWidth) / static_cast<float>(this->_windowHeight);
-		float nearZ = 0.1f;
-		float farZ = 1000.0f;
-		DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
-		
-		this->_constantBuffer.Data.mat4 = worldMatrix * viewMatrix * projectionMatrix;
-		this->_constantBuffer.Data.mat4 = DirectX::XMMatrixTranspose(this->_constantBuffer.Data.mat4);
+		XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
+		_mainCamera.AdjustPosition(0.0f, 0.01f, 0.0f);
+		this->_constantBuffer.Data.mat4 = worldMatrix * _mainCamera.GetViewMatrix() * _mainCamera.GetProjectionMatrix();
+		this->_constantBuffer.Data.mat4 = XMMatrixTranspose(this->_constantBuffer.Data.mat4);
 		if(!this->_constantBuffer.ApplyChanges())
 		{
 			return;
@@ -295,6 +284,9 @@ namespace s3d { namespace graphics {
 			utility::ErrorLogger::Log(hr, "Failed to create constant buffer.");
 			return false;
 		}
+
+		_mainCamera.SetPosition(0.0f, 0.0f, -2.0f);
+		_mainCamera.SetProjectionValues(90, static_cast<float>(_windowWidth) / static_cast<float>(_windowHeight), 0.1f, 1000.0f);
 
 		return true;
 	}

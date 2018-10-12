@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\Engine.cpp" />
     <ClCompile Include="..\src\graphics\AdapterReader.cpp" />
+    <ClCompile Include="..\src\graphics\Camera.cpp" />
     <ClCompile Include="..\src\graphics\Graphics.cpp" />
     <ClCompile Include="..\src\graphics\Shader.cpp" />
     <ClCompile Include="..\src\input\Keyboard.cpp" />
@@ -185,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\Engine.h" />
     <ClInclude Include="..\src\graphics\AdapterReader.h" />
+    <ClInclude Include="..\src\graphics\Camera.h" />
     <ClInclude Include="..\src\graphics\ConstantBuffer.h" />
     <ClInclude Include="..\src\graphics\ConstantBufferTypes.h" />
     <ClInclude Include="..\src\graphics\Graphics.h" />

@@ -69,6 +69,9 @@
     <ClCompile Include="..\src\graphics\Shader.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\graphics\Camera.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\input\Keyboard.h">
@@ -120,6 +123,9 @@
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\src\graphics\ConstantBuffer.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\graphics\Camera.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
   </ItemGroup>

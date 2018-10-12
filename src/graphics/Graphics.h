@@ -8,6 +8,7 @@
 #include <WICTextureLoader.h>
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
+#include "Camera.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -48,5 +49,7 @@ namespace s3d { namespace graphics {
 
 		int _windowWidth;
 		int _windowHeight;
+
+		Camera _mainCamera;
 	};
 } }
