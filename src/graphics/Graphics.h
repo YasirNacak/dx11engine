@@ -18,7 +18,7 @@ namespace s3d { namespace graphics {
 		bool Initialize(HWND hwnd, int width, int height);
 		void RenderFrame();
 	private:
-		bool InitializeDirectX(HWND hwnd, int width, int height);
+		bool InitializeDirectX(HWND hwnd);
 		bool InitializeShaders();
 		bool InitializeScene();
 
@@ -45,5 +45,8 @@ namespace s3d { namespace graphics {
 
 		ComPtr<ID3D11SamplerState> _samplerState;
 		ComPtr<ID3D11ShaderResourceView> _exampleTexture;
+
+		int _windowWidth;
+		int _windowHeight;
 	};
 } }

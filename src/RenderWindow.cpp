@@ -35,7 +35,7 @@ namespace s3d {
 				0,
 				this->_windowClassWide.c_str(),
 				this->_windowTitleWide.c_str(),
-				WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+				WS_POPUPWINDOW | WS_CAPTION,
 				windowRect.left,
 				windowRect.top,
 				windowRect.right - windowRect.left,
@@ -146,7 +146,7 @@ namespace s3d {
 		windowClass.hIcon = NULL;
 		windowClass.hIconSm = NULL;
 		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-		windowClass.hbrBackground = NULL;
+		windowClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
 		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = this->_windowClassWide.c_str();
 		windowClass.cbSize = sizeof(WNDCLASSEX);

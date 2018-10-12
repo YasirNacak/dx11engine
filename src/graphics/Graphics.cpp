@@ -5,7 +5,10 @@
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
 	{
-		if (!InitializeDirectX(hwnd, width, height))
+		this->_windowWidth = width;
+		this->_windowHeight = height;
+
+		if (!InitializeDirectX(hwnd))
 			return false;
 
 		if (!InitializeShaders())
@@ -17,7 +20,7 @@ namespace s3d { namespace graphics {
 		return true;
 	}
 
-	bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
+	bool Graphics::InitializeDirectX(HWND hwnd)
 	{
 		auto adapters = AdapterReader::GetAdapters();
 
@@ -30,8 +33,8 @@ namespace s3d { namespace graphics {
 		DXGI_SWAP_CHAIN_DESC scd;
 		ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-		scd.BufferDesc.Width = width;
-		scd.BufferDesc.Height = height;
+		scd.BufferDesc.Width = this->_windowWidth;
+		scd.BufferDesc.Height = this->_windowHeight;
 		scd.BufferDesc.RefreshRate.Denominator = 1;
 		scd.BufferDesc.RefreshRate.Numerator = 60;
 		scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -62,6 +65,8 @@ namespace s3d { namespace graphics {
 			NULL,
 			this->_deviceContext.GetAddressOf());
 
+		
+
 		if(FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Creating device and swap chain failed.");
@@ -85,8 +90,8 @@ namespace s3d { namespace graphics {
 
 		D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
 
-		depthStencilBufferDesc.Width = width;
-		depthStencilBufferDesc.Height = height;
+		depthStencilBufferDesc.Width = this->_windowWidth;
+		depthStencilBufferDesc.Height = this->_windowHeight;
 		depthStencilBufferDesc.MipLevels = 1;
 		depthStencilBufferDesc.ArraySize = 1;
 		depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -132,8 +137,8 @@ namespace s3d { namespace graphics {
 
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.Width = static_cast<float>(width);
-		viewport.Height = static_cast<float>(height);
+		viewport.Width = static_cast<float>(this->_windowWidth);
+		viewport.Height = static_cast<float>(this->_windowHeight);
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 
@@ -193,7 +198,20 @@ namespace s3d { namespace graphics {
 
 		UINT offset = 0;
 
-		this->_constantBuffer.Data.mat4 = DirectX::XMMatrixScaling(1.52f, 0.5f, 0.0f);
+		DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
+		static DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
+		static DirectX::XMVECTOR focusPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		static DirectX::XMVECTOR upDirection = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
+
+		float fovDegrees = 90.0f;
+		float fovRadians = (fovDegrees / 360.0f) * DirectX::XM_2PI;
+		float aspectRatio = static_cast<float>(this->_windowWidth) / static_cast<float>(this->_windowHeight);
+		float nearZ = 0.1f;
+		float farZ = 1000.0f;
+		DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
+		
+		this->_constantBuffer.Data.mat4 = worldMatrix * viewMatrix * projectionMatrix;
 		this->_constantBuffer.Data.mat4 = DirectX::XMMatrixTranspose(this->_constantBuffer.Data.mat4);
 		if(!this->_constantBuffer.ApplyChanges())
 		{
@@ -211,6 +229,7 @@ namespace s3d { namespace graphics {
 		_spriteFont->DrawString(_spriteBatch.get(), L"dx11engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::Aquamarine, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 		_spriteBatch->End();
 
+		//this->_swapChain->SetFullscreenState(true, NULL);
 		this->_swapChain->Present(1, NULL);
 	}
 
@@ -237,10 +256,10 @@ namespace s3d { namespace graphics {
 	{
 		// QUAD
 		Vertex v[] = {
-			{-0.5f, -0.5f, 1.0f, 0.0f, 1.0f},
-			{-0.5f,  0.5f, 1.0f, 0.0f, 0.0f},
-			{ 0.5f,  0.5f, 1.0f, 1.0f, 0.0f},
-			{ 0.5f, -0.5f, 1.0f, 1.0f, 1.0f},
+			{-0.5f, -0.5f, 0.0f, 0.0f, 1.0f},
+			{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f},
+			{ 0.5f,  0.5f, 0.0f, 1.0f, 0.0f},
+			{ 0.5f, -0.5f, 0.0f, 1.0f, 1.0f},
 		};
 
 		HRESULT hr = this->_vertexBuffer.Initialize(this->_device.Get(), v, ARRAYSIZE(v));
