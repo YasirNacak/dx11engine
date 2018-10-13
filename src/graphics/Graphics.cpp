@@ -40,6 +40,16 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
+		AdapterData highestMemAdapter = adapters[0];
+
+		for (int i = 1; i < adapters.size(); i++)
+		{
+			if(adapters[i].Description.DedicatedVideoMemory > highestMemAdapter.Description.DedicatedVideoMemory)
+			{
+				highestMemAdapter = adapters[i];
+			}
+		}
+
 		DXGI_SWAP_CHAIN_DESC scd;
 		ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -62,7 +72,7 @@ namespace s3d { namespace graphics {
 		scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 		auto hr = D3D11CreateDeviceAndSwapChain(
-			adapters[0].PAdapter,
+			highestMemAdapter.PAdapter,
 			D3D_DRIVER_TYPE_UNKNOWN,
 			NULL,
 			NULL,
