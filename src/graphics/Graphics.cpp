@@ -207,7 +207,9 @@ namespace s3d { namespace graphics {
 
 		UINT offset = 0;
 
-		XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
+		static float translationOffset[3] = { 0, 0, 0 };
+		XMMATRIX worldMatrix = 
+			DirectX::XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
 		this->_constantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
 		this->_constantBuffer.Data.mat4 = XMMatrixTranspose(this->_constantBuffer.Data.mat4);
 		if(!this->_constantBuffer.ApplyChanges())
@@ -235,18 +237,19 @@ namespace s3d { namespace graphics {
 		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 		_spriteBatch->End();
 
+#if _DEBUG
 		// imgui debug windows and stuff
-		{
-			ImGui_ImplDX11_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
 
-			ImGui::Begin("test");
-			ImGui::End();
+		ImGui::Begin("Debug Window");
+		ImGui::DragFloat3("Quad Translation", translationOffset, 0.1f, -5.0f, 5.0f);
+		ImGui::End();
 
-			ImGui::Render();
-			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		}
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif
 
 		this->_swapChain->Present(0, NULL);
 	}
