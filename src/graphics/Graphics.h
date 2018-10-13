@@ -9,6 +9,7 @@
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
 #include "Camera.h"
+#include "../utility/Timer.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -52,5 +53,7 @@ namespace s3d { namespace graphics {
 
 		int _windowWidth;
 		int _windowHeight;
+
+		utility::Timer _fpsTimer;
 	};
 } }

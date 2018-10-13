@@ -8,6 +8,8 @@ namespace s3d {
 		height = GetSystemMetrics(SM_CYSCREEN);
 		 */
 
+		_timer.Start();
+
 		if(!this->_renderWindow.Initialize(
 			this,
 			hInstance,
@@ -34,6 +36,9 @@ namespace s3d {
 
 	void Engine::Update()
 	{
+		float dt = _timer.GetMillisecondsElapsed();
+		_timer.Restart();
+
 		while(!_keyboard.IsCharBufferEmpty())
 		{
 			const auto ch = _keyboard.ReadChar();
@@ -69,36 +74,39 @@ namespace s3d {
 			}	
 		}
 
-		const float cameraSpeed = 0.02f;
+		const float cameraSpeed = 0.005f;
+
+		XMVECTOR moveSpeedVector{cameraSpeed, cameraSpeed, cameraSpeed};
+		moveSpeedVector = DirectX::XMVectorMultiply(moveSpeedVector, {dt, dt, dt});
 
 		if(this->_keyboard.IsKeyPressed('W'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetForwardVector(), { cameraSpeed, cameraSpeed, cameraSpeed }));
+			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetForwardVector(), moveSpeedVector));
 		}
 
 		if (this->_keyboard.IsKeyPressed('S'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetBackwardVector(), { cameraSpeed, cameraSpeed, cameraSpeed }));
+			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetBackwardVector(), moveSpeedVector));
 		}
 
 		if (this->_keyboard.IsKeyPressed('A'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetLeftVector(), { cameraSpeed, cameraSpeed, cameraSpeed }));
+			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetLeftVector(), moveSpeedVector));
 		}
 
 		if (this->_keyboard.IsKeyPressed('D'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetRightVector(), { cameraSpeed, cameraSpeed, cameraSpeed }));
+			this->_graphics.MainCamera.AdjustPosition(DirectX::XMVectorMultiply(this->_graphics.MainCamera.GetRightVector(), moveSpeedVector));
 		}
 
 		if (_keyboard.IsKeyPressed('X'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(0.0f, cameraSpeed, 0.0f);
+			this->_graphics.MainCamera.AdjustPosition(0.0f, cameraSpeed * dt, 0.0f);
 		}
 
 		if (_keyboard.IsKeyPressed('Z'))
 		{
-			this->_graphics.MainCamera.AdjustPosition(0.0f, -cameraSpeed, 0.0f);
+			this->_graphics.MainCamera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
 		}
 
 		_graphics.RenderFrame();

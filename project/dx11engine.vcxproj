@@ -181,6 +181,7 @@
     <ClCompile Include="..\src\Main.cpp" />
     <ClCompile Include="..\src\RenderWindow.cpp" />
     <ClCompile Include="..\src\utility\StringConverter.cpp" />
+    <ClCompile Include="..\src\utility\Timer.cpp" />
     <ClCompile Include="..\src\WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +202,7 @@
     <ClInclude Include="..\src\utility\ErrorLogger.h" />
     <ClInclude Include="..\src\RenderWindow.h" />
     <ClInclude Include="..\src\utility\StringConverter.h" />
+    <ClInclude Include="..\src\utility\Timer.h" />
     <ClInclude Include="..\src\WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>

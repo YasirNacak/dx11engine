@@ -5,6 +5,8 @@
 namespace s3d { namespace graphics {
 	bool Graphics::Initialize(HWND hwnd, int width, int height)
 	{
+		this->_fpsTimer.Start();
+
 		this->_windowWidth = width;
 		this->_windowHeight = height;
 
@@ -212,12 +214,21 @@ namespace s3d { namespace graphics {
 
 		this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
 
+		static int fpsCounter = 0;
+		static std::string fpsString = "FPS: 0";
+		fpsCounter += 1;
+		if (_fpsTimer.GetMillisecondsElapsed() > 1000.0)
+		{
+			fpsString = "FPS: " + std::to_string(fpsCounter);
+			fpsCounter = 0;
+			_fpsTimer.Restart();
+		}
 		_spriteBatch->Begin();
-		_spriteFont->DrawString(_spriteBatch.get(), L"dx11engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::Aquamarine, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 		_spriteBatch->End();
 
 		//this->_swapChain->SetFullscreenState(true, NULL);
-		this->_swapChain->Present(1, NULL);
+		this->_swapChain->Present(0, NULL);
 	}
 
 	bool Graphics::InitializeShaders()

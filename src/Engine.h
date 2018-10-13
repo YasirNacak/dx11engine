@@ -1,5 +1,6 @@
 #pragma once
 #include "WindowContainer.h"
+#include "utility/Timer.h"
 
 namespace s3d {
 	class Engine : WindowContainer
@@ -13,5 +14,8 @@ namespace s3d {
 			int				height = 240);
 		bool ProcessMessages();
 		void Update();
+
+	private:
+		utility::Timer _timer;
 	};
 }

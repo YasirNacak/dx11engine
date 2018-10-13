@@ -72,6 +72,9 @@
     <ClCompile Include="..\src\graphics\Camera.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\utility\Timer.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\input\Keyboard.h">
@@ -127,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="..\src\graphics\Camera.h">
       <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utility\Timer.h">
+      <Filter>src\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
