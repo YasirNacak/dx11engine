@@ -29,6 +29,9 @@ namespace s3d { namespace graphics {
 
 		HRESULT Initialize(ID3D11Device *device, ID3D11DeviceContext *deviceContext)
 		{
+			if (_buffer.Get() != nullptr)
+				_buffer.Reset();
+			
 			this->_deviceContext = deviceContext;
 
 			D3D11_BUFFER_DESC bufferDesc;

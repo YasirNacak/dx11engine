@@ -31,6 +31,9 @@ namespace s3d { namespace graphics {
 
 		HRESULT Initialize(ID3D11Device *device, DWORD *data, UINT numIndices)
 		{
+			if (_buffer.Get() != nullptr)
+				_buffer.Reset();
+
 			this->_bufferSize = numIndices;
 
 			D3D11_BUFFER_DESC bufferDesc;

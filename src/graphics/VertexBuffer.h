@@ -42,8 +42,13 @@ namespace s3d { namespace graphics {
 
 		HRESULT Initialize(ID3D11Device *device, T *data, UINT numVertices)
 		{
+			if (_buffer.Get() != nullptr)
+				_buffer.Reset();
+
 			this->_bufferSize = numVertices;
-			this->_stride = std::make_unique<UINT>(sizeof(T));
+			
+			if(this->_stride.get() == nullptr)
+				this->_stride = std::make_unique<UINT>(sizeof(T));
 
 			D3D11_BUFFER_DESC bufferDesc;
 			ZeroMemory(&bufferDesc, sizeof D3D11_BUFFER_DESC);
