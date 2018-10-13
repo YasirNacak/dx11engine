@@ -51,7 +51,7 @@ namespace s3d { namespace graphics {
 		scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-		scd.SampleDesc.Count = 1;
+		scd.SampleDesc.Count = 4;
 		scd.SampleDesc.Quality = 0;
 
 		scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -105,8 +105,8 @@ namespace s3d { namespace graphics {
 		depthStencilBufferDesc.MipLevels = 1;
 		depthStencilBufferDesc.ArraySize = 1;
 		depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthStencilBufferDesc.SampleDesc.Count = 1;
-		depthStencilBufferDesc.SampleDesc.Quality = 0;
+		depthStencilBufferDesc.SampleDesc.Count = scd.SampleDesc.Count;
+		depthStencilBufferDesc.SampleDesc.Quality = scd.SampleDesc.Quality;
 		depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		depthStencilBufferDesc.CPUAccessFlags = 0;
@@ -119,7 +119,13 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		hr = this->_device->CreateDepthStencilView(this->_depthStencilBuffer.Get(), NULL, this->_depthStencilView.GetAddressOf());
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+		ZeroMemory(&depthStencilViewDesc, sizeof D3D11_DEPTH_STENCIL_VIEW_DESC);
+		depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+		depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+		hr = this->_device->CreateDepthStencilView(this->_depthStencilBuffer.Get(), &depthStencilViewDesc, this->_depthStencilView.GetAddressOf());
 		if (FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Creating depth stencil view failed.");
