@@ -3,10 +3,8 @@
 namespace s3d {
 	bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
 	{
-		/*
 		width = GetSystemMetrics(SM_CXSCREEN);
 		height = GetSystemMetrics(SM_CYSCREEN);
-		 */
 
 		_timer.Start();
 
