@@ -51,6 +51,26 @@ namespace s3d { namespace graphics
 		return this->_rotation;
 	}
 
+	const XMVECTOR& Camera::GetForwardVector() const
+	{
+		return this->_forwardVector;
+	}
+
+	const XMVECTOR& Camera::GetBackwardVector() const
+	{
+		return this->_backwardVector;
+	}
+
+	const XMVECTOR& Camera::GetLeftVector() const
+	{
+		return this->_leftVector;
+	}
+
+	const XMVECTOR& Camera::GetRightVector() const
+	{
+		return this->_rightVector;
+	}
+
 	void Camera::SetPosition(const XMVECTOR& position)
 	{
 		XMStoreFloat3(&this->_position, position);
@@ -110,6 +130,7 @@ namespace s3d { namespace graphics
 		this->_rotation.y += y;
 		this->_rotation.z += z;
 		this->_rotationVector = XMLoadFloat3(&this->_rotation);
+		this->UpdateViewMatrix();
 	}
 
 	void Camera::SetLookAtPosition(XMFLOAT3 lookAtPosition)
@@ -150,5 +171,12 @@ namespace s3d { namespace graphics
 		//target += this->_positionVector;
 		XMVECTOR upDirection = XMVector3TransformCoord(this->DefaultUpVector, rotationMatrix);
 		this->_viewMatrix = DirectX::XMMatrixLookAtLH(this->_positionVector, target, upDirection);
+
+		rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(0.0f, this->_rotation.y, 0.0f);
+
+		this->_forwardVector = XMVector3TransformCoord(this->DefaultForwardVector, rotationMatrix);
+		this->_backwardVector = XMVector3TransformCoord(this->DefaultBackwardVector, rotationMatrix);
+		this->_leftVector = XMVector3TransformCoord(this->DefaultLeftVector, rotationMatrix);
+		this->_rightVector = XMVector3TransformCoord(this->DefaultRightVector, rotationMatrix);
 	}
 } }

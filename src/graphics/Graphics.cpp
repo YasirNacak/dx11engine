@@ -198,8 +198,6 @@ namespace s3d { namespace graphics {
 		UINT offset = 0;
 
 		XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
-		MainCamera.AdjustPosition(0.01f, 0.01f, 0.0f);
-		MainCamera.SetLookAtPosition({0.0f, 0.0f, 0.0f});
 		this->_constantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
 		this->_constantBuffer.Data.mat4 = XMMatrixTranspose(this->_constantBuffer.Data.mat4);
 		if(!this->_constantBuffer.ApplyChanges())
