@@ -1,5 +1,7 @@
 #include "WindowContainer.h"
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace s3d {
 	WindowContainer::WindowContainer()
 	{
@@ -25,6 +27,9 @@ namespace s3d {
 
 	LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMessage, WPARAM wParam, LPARAM lParam)
 	{
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, uMessage, wParam, lParam))
+			return true;
+
 		// these two are only used in mouse events
 		// they mean something completely different with other messages
 		const int mousePosX = LOWORD(lParam);

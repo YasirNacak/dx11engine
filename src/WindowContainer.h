@@ -5,6 +5,7 @@
 #include "graphics/Graphics.h"
 
 namespace s3d {
+
 	class WindowContainer
 	{
 	public:

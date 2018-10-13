@@ -11,6 +11,10 @@
 #include "Camera.h"
 #include "../utility/Timer.h"
 
+#include "../../external/imgui/imgui.h"
+#include "../../external/imgui/imgui_impl_win32.h"
+#include "../../external/imgui/imgui_impl_dx11.h"
+
 using Microsoft::WRL::ComPtr;
 
 namespace s3d { namespace graphics {

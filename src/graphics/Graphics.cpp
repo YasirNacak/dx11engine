@@ -19,6 +19,14 @@ namespace s3d { namespace graphics {
 		if (!InitializeScene())
 			return false;
 
+		//imgui init
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui_ImplWin32_Init(hwnd);
+		ImGui_ImplDX11_Init(this->_device.Get(), this->_deviceContext.Get());
+		ImGui::StyleColorsLight();
+
 		return true;
 	}
 
@@ -67,7 +75,7 @@ namespace s3d { namespace graphics {
 			NULL,
 			this->_deviceContext.GetAddressOf());
 
-		
+		//this->_swapChain->SetFullscreenState(true, NULL);
 
 		if(FAILED(hr))
 		{
@@ -227,7 +235,19 @@ namespace s3d { namespace graphics {
 		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 		_spriteBatch->End();
 
-		//this->_swapChain->SetFullscreenState(true, NULL);
+		// imgui debug windows and stuff
+		{
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::Begin("test");
+			ImGui::End();
+
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		}
+
 		this->_swapChain->Present(0, NULL);
 	}
 
