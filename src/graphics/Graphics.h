@@ -39,7 +39,9 @@ namespace s3d { namespace graphics {
 		VertexShader _vertexShader;
 		PixelShader _pixelShader;
 
-		ConstantBuffer<CB_VS_vertexshader> _constantBuffer;
+		ConstantBuffer<CB_VS_vertexshader> _vertexShaderConstantBuffer;
+		ConstantBuffer<CB_PS_pixelshader> _pixelShaderConstantBuffer;
+
 		VertexBuffer<Vertex> _vertexBuffer;
 		IndexBuffer _indexBuffer;
 
@@ -48,12 +50,15 @@ namespace s3d { namespace graphics {
 		ComPtr<ID3D11DepthStencilState> _depthStencilState;
 
 		ComPtr<ID3D11RasterizerState> _rasterizerState;
+		ComPtr<ID3D11BlendState> _blendState;
 
 		std::unique_ptr<DirectX::SpriteBatch> _spriteBatch;
 		std::unique_ptr<DirectX::SpriteFont> _spriteFont;
 
 		ComPtr<ID3D11SamplerState> _samplerState;
-		ComPtr<ID3D11ShaderResourceView> _exampleTexture;
+		ComPtr<ID3D11ShaderResourceView> _grassExampleTexture;
+		ComPtr<ID3D11ShaderResourceView> _pavementExampleTexture;
+		ComPtr<ID3D11ShaderResourceView> _pinkExampleTexture;
 
 		int _windowWidth;
 		int _windowHeight;

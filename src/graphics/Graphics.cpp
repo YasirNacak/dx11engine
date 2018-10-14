@@ -183,6 +183,30 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
+		D3D11_BLEND_DESC blendDesc;
+		ZeroMemory(&blendDesc, sizeof D3D11_BLEND_DESC);
+
+		D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc;
+		ZeroMemory(&renderTargetBlendDesc, sizeof D3D11_RENDER_TARGET_BLEND_DESC);
+
+		renderTargetBlendDesc.BlendEnable = true;
+		renderTargetBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		renderTargetBlendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		renderTargetBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
+		renderTargetBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+		renderTargetBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+		renderTargetBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		renderTargetBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		blendDesc.RenderTarget[0] = renderTargetBlendDesc;
+
+		hr = this->_device->CreateBlendState(&blendDesc, this->_blendState.GetAddressOf());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create blend state.");
+			return false;
+		}
+
 		_spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->_deviceContext.Get());
 		_spriteFont = std::make_unique<DirectX::SpriteFont>(this->_device.Get(), L"data\\typeface\\argentum_sans_regular_16.spritefont");
 
@@ -217,28 +241,88 @@ namespace s3d { namespace graphics {
 		this->_deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		this->_deviceContext->RSSetState(this->_rasterizerState.Get());
 		this->_deviceContext->OMSetDepthStencilState(this->_depthStencilState.Get(), 0);
+		this->_deviceContext->OMSetBlendState(this->_blendState.Get(), NULL, 0xFFFFFFFF);
 		this->_deviceContext->PSSetSamplers(0, 1, this->_samplerState.GetAddressOf());
 		this->_deviceContext->VSSetShader(this->_vertexShader.GetShader(), NULL, 0);
 		this->_deviceContext->PSSetShader(this->_pixelShader.GetShader(), NULL, 0);
 
 		UINT offset = 0;
 
-		static float translationOffset[3] = { 0, 0, 0 };
-		XMMATRIX worldMatrix = 
-			DirectX::XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
-		this->_constantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
-		this->_constantBuffer.Data.mat4 = XMMatrixTranspose(this->_constantBuffer.Data.mat4);
-		if(!this->_constantBuffer.ApplyChanges())
+		static float alpha = 1.0f;
+
 		{
-			return;
+			// PAVEMENT
+			float translationOffset[3] = { 0, 0, 4.0f };
+			XMMATRIX worldMatrix =
+				DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f) *
+				DirectX::XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
+			this->_vertexShaderConstantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
+			this->_vertexShaderConstantBuffer.Data.mat4 = XMMatrixTranspose(this->_vertexShaderConstantBuffer.Data.mat4);
+			if (!this->_vertexShaderConstantBuffer.ApplyChanges())
+			{
+				return;
+			}
+			this->_deviceContext->VSSetConstantBuffers(0, 1, this->_vertexShaderConstantBuffer.GetBufferAddress());
+
+			this->_pixelShaderConstantBuffer.Data.alpha = 1.0f;
+			this->_pixelShaderConstantBuffer.ApplyChanges();
+			this->_deviceContext->PSSetConstantBuffers(0, 1, this->_pixelShaderConstantBuffer.GetBufferAddress());
+
+			this->_deviceContext->PSSetShaderResources(0, 1, this->_pavementExampleTexture.GetAddressOf());
+			this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetBufferAddress(), _vertexBuffer.GetStridePtr(), &offset);
+			this->_deviceContext->IASetIndexBuffer(this->_indexBuffer.GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
+
+			this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
 		}
-		this->_deviceContext->VSSetConstantBuffers(0, 1, this->_constantBuffer.GetBufferAddress());
 
-		this->_deviceContext->PSSetShaderResources(0, 1, this->_exampleTexture.GetAddressOf());
-		this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetBufferAddress(), _vertexBuffer.GetStridePtr(), &offset);
-		this->_deviceContext->IASetIndexBuffer(this->_indexBuffer.GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		{
+			// GRASS
+			float translationOffset[3] = { 0, 0, 0 };
+			XMMATRIX worldMatrix =
+				DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f) *
+				DirectX::XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
+			this->_vertexShaderConstantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
+			this->_vertexShaderConstantBuffer.Data.mat4 = XMMatrixTranspose(this->_vertexShaderConstantBuffer.Data.mat4);
+			if (!this->_vertexShaderConstantBuffer.ApplyChanges())
+			{
+				return;
+			}
+			this->_deviceContext->VSSetConstantBuffers(0, 1, this->_vertexShaderConstantBuffer.GetBufferAddress());
 
-		this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
+			this->_pixelShaderConstantBuffer.Data.alpha = 1.0f;
+			this->_pixelShaderConstantBuffer.ApplyChanges();
+			this->_deviceContext->PSSetConstantBuffers(0, 1, this->_pixelShaderConstantBuffer.GetBufferAddress());
+
+			this->_deviceContext->PSSetShaderResources(0, 1, this->_grassExampleTexture.GetAddressOf());
+			this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetBufferAddress(), _vertexBuffer.GetStridePtr(), &offset);
+			this->_deviceContext->IASetIndexBuffer(this->_indexBuffer.GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
+
+			this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
+		}
+
+		{
+			// PINK
+			float translationOffset[3] = { 0, 0, -1.0f };
+			XMMATRIX worldMatrix =
+				DirectX::XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
+			this->_vertexShaderConstantBuffer.Data.mat4 = worldMatrix * MainCamera.GetViewMatrix() * MainCamera.GetProjectionMatrix();
+			this->_vertexShaderConstantBuffer.Data.mat4 = XMMatrixTranspose(this->_vertexShaderConstantBuffer.Data.mat4);
+			if (!this->_vertexShaderConstantBuffer.ApplyChanges())
+			{
+				return;
+			}
+			this->_deviceContext->VSSetConstantBuffers(0, 1, this->_vertexShaderConstantBuffer.GetBufferAddress());
+
+			this->_pixelShaderConstantBuffer.Data.alpha = alpha;
+			this->_pixelShaderConstantBuffer.ApplyChanges();
+			this->_deviceContext->PSSetConstantBuffers(0, 1, this->_pixelShaderConstantBuffer.GetBufferAddress());
+
+			this->_deviceContext->PSSetShaderResources(0, 1, this->_pinkExampleTexture.GetAddressOf());
+			this->_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetBufferAddress(), _vertexBuffer.GetStridePtr(), &offset);
+			this->_deviceContext->IASetIndexBuffer(this->_indexBuffer.GetBuffer(), DXGI_FORMAT_R32_UINT, 0);
+
+			this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
+		}
 
 		static int fpsCounter = 0;
 		static std::string fpsString = "FPS: 0";
@@ -260,7 +344,7 @@ namespace s3d { namespace graphics {
 		ImGui::NewFrame();
 
 		ImGui::Begin("Debug Window");
-		ImGui::DragFloat3("Quad Translation", translationOffset, 0.1f, -5.0f, 5.0f);
+		ImGui::DragFloat("Quad Transparency", &alpha, 0.01f, 0.0f, 1.0f);
 		ImGui::End();
 
 		ImGui::Render();
@@ -318,18 +402,38 @@ namespace s3d { namespace graphics {
 			return false;
 		}
 
-		hr = DirectX::CreateWICTextureFromFile(this->_device.Get(), L"data\\graphic\\texture\\simple_pattern.png", nullptr, _exampleTexture.GetAddressOf());
+		hr = DirectX::CreateWICTextureFromFile(this->_device.Get(), L"data\\graphic\\texture\\grass.jpg", nullptr, _grassExampleTexture.GetAddressOf());
 		if(FAILED(hr))
 		{
 			utility::ErrorLogger::Log(hr, "Failed to create WIC texture from file buffer.");
 			return false;
 		}
 
-
-		hr = this->_constantBuffer.Initialize(this->_device.Get(), this->_deviceContext.Get());
+		hr = DirectX::CreateWICTextureFromFile(this->_device.Get(), L"data\\graphic\\texture\\pink_square.jpg", nullptr, _pinkExampleTexture.GetAddressOf());
 		if (FAILED(hr))
 		{
-			utility::ErrorLogger::Log(hr, "Failed to create constant buffer.");
+			utility::ErrorLogger::Log(hr, "Failed to create WIC texture from file buffer.");
+			return false;
+		}
+
+		hr = DirectX::CreateWICTextureFromFile(this->_device.Get(), L"data\\graphic\\texture\\pavement.jpg", nullptr, _pavementExampleTexture.GetAddressOf());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create WIC texture from file buffer.");
+			return false;
+		}
+
+		hr = this->_vertexShaderConstantBuffer.Initialize(this->_device.Get(), this->_deviceContext.Get());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create constant buffer for vertex shader.");
+			return false;
+		}
+
+		hr = this->_pixelShaderConstantBuffer.Initialize(this->_device.Get(), this->_deviceContext.Get());
+		if (FAILED(hr))
+		{
+			utility::ErrorLogger::Log(hr, "Failed to create constant buffer for pixel shader.");
 			return false;
 		}
 
