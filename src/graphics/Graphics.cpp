@@ -334,7 +334,9 @@ namespace s3d { namespace graphics {
 			_fpsTimer.Restart();
 		}
 		_spriteBatch->Begin();
+#if _DEBUG
 		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+#endif
 		_spriteBatch->End();
 
 #if _DEBUG
