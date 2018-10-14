@@ -73,29 +73,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)external\directxtk\libs\x86\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)external\fmod\includes;$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\fmod\libs\x86\Debug;$(SolutionDir)external\directxtk\libs\x86\Debug;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\bin\build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)external\directxtk\libs\x64\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)external\fmod\includes;$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\fmod\libs\x64\Debug;$(SolutionDir)external\directxtk\libs\x64\Debug;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\bin\build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)external\directxtk\libs\x86\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)external\fmod\includes;$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\fmod\libs\x86\Release;$(SolutionDir)external\directxtk\libs\x86\Release;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\bin\build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)external\directxtk\libs\x64\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)external\fmod\includes;$(SolutionDir)external\directxtk\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)external\fmod\libs\x64\Release;$(SolutionDir)external\directxtk\libs\x64\Release;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\bin\build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -109,6 +109,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>fmodL_vc.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)data\shader\%(Filename).cso</ObjectFileOutput>
@@ -124,6 +125,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>fmodL64_vc.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)data\shader\%(Filename).cso</ObjectFileOutput>
@@ -143,6 +145,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>fmod_vc.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)data\shader\%(Filename).cso</ObjectFileOutput>
@@ -162,6 +165,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>fmod64_vc.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)data\shader\%(Filename).cso</ObjectFileOutput>
