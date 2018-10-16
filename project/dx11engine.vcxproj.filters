@@ -34,6 +34,9 @@
     <Filter Include="external\imgui">
       <UniqueIdentifier>{6217cab6-ee4e-43d2-b27c-86a32dac61f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\entitysystem">
+      <UniqueIdentifier>{464a35b2-4990-4cc1-b389-3264d1db1762}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\input\Keyboard.cpp">
@@ -98,6 +101,12 @@
     </ClCompile>
     <ClCompile Include="..\external\imgui\imgui_widgets.cpp">
       <Filter>external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\entitysystem\Entity.cpp">
+      <Filter>src\entitysystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\entitysystem\Manager.cpp">
+      <Filter>src\entitysystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +190,15 @@
     </ClInclude>
     <ClInclude Include="..\external\imgui\imstb_truetype.h">
       <Filter>external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\entitysystem\Component.h">
+      <Filter>src\entitysystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\entitysystem\Entity.h">
+      <Filter>src\entitysystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\entitysystem\Manager.h">
+      <Filter>src\entitysystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

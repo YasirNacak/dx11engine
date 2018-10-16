@@ -102,6 +102,8 @@
     <ClCompile Include="..\external\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\src\Engine.cpp" />
+    <ClCompile Include="..\src\entitysystem\Entity.cpp" />
+    <ClCompile Include="..\src\entitysystem\Manager.cpp" />
     <ClCompile Include="..\src\graphics\AdapterReader.cpp" />
     <ClCompile Include="..\src\graphics\Camera.cpp" />
     <ClCompile Include="..\src\graphics\Graphics.cpp" />
@@ -127,6 +129,9 @@
     <ClInclude Include="..\external\imgui\imstb_textedit.h" />
     <ClInclude Include="..\external\imgui\imstb_truetype.h" />
     <ClInclude Include="..\src\Engine.h" />
+    <ClInclude Include="..\src\entitysystem\Component.h" />
+    <ClInclude Include="..\src\entitysystem\Entity.h" />
+    <ClInclude Include="..\src\entitysystem\Manager.h" />
     <ClInclude Include="..\src\graphics\AdapterReader.h" />
     <ClInclude Include="..\src\graphics\Camera.h" />
     <ClInclude Include="..\src\graphics\ConstantBuffer.h" />
