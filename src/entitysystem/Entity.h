@@ -3,6 +3,7 @@
 #include <bitset>
 #include <memory>
 #include <array>
+#include <string>
 #include "Component.h"
 
 namespace s3d { namespace entitysystem
@@ -17,11 +18,13 @@ namespace s3d { namespace entitysystem
 	class Entity
 	{
 	public:
-		Entity(Manager& manager);
+		Entity(std::string name, Manager& manager);
 		void Update(float mFT);
 		void Draw();
 		bool IsAlive() const;
 		void Destroy();
+		std::string Name;
+		std::vector<std::unique_ptr<Component>> ComponentList;
 
 	public:
 		template <typename T>
@@ -31,14 +34,14 @@ namespace s3d { namespace entitysystem
 		}
 
 		template <typename T, typename... TArgs>
-		T& addComponent(TArgs&&... mArgs)
+		T& AddComponent(TArgs&&... mArgs)
 		{
 			assert(!HasComponent<T>());
 
 			T* c(new T(std::forward<TArgs>(mArgs)...));
 			c->Entity = this;
 			std::unique_ptr<Component> uPtr{ c };
-			_componentList.emplace_back(std::move(uPtr));
+			ComponentList.emplace_back(std::move(uPtr));
 
 			_componentArray[getComponentTypeID<T>()] = c;
 			_componentBitset[getComponentTypeID<T>()] = true;
@@ -60,7 +63,6 @@ namespace s3d { namespace entitysystem
 		Manager& _manager;
 
 		bool _isAlive = true;
-		std::vector<std::unique_ptr<Component>> _componentList;
 		ComponentArray _componentArray;
 		ComponentBitset _componentBitset;
 	};

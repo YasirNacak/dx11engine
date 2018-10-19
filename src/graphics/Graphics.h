@@ -14,15 +14,21 @@
 #include "../../external/imgui/imgui.h"
 #include "../../external/imgui/imgui_impl_win32.h"
 #include "../../external/imgui/imgui_impl_dx11.h"
+#include "../entitysystem/Entity.h"
 
 using Microsoft::WRL::ComPtr;
+
+namespace s3d
+{
+	class Engine;
+}
 
 namespace s3d { namespace graphics {
 	class Graphics
 	{
 	public:
 		bool Initialize(HWND hwnd, int width, int height);
-		void RenderFrame();
+		void RenderFrame(Engine& engine);
 
 		Camera MainCamera;
 

@@ -3,8 +3,12 @@
 namespace s3d {
 	bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
 	{
+		_keyboard.DisableAutoRepeatChars();
 		width = GetSystemMetrics(SM_CXSCREEN);
 		height = GetSystemMetrics(SM_CYSCREEN);
+
+		_windowWidth = width;
+		_windowHeight = height;
 
 		_timer.Start();
 
@@ -107,6 +111,76 @@ namespace s3d {
 			this->_graphics.MainCamera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
 		}
 
-		_graphics.RenderFrame();
+		_graphics.RenderFrame(*this);
+	}
+
+	void Engine::AddEntity(std::string name)
+	{
+		_entityManager.AddEntity(name);
+	}
+
+	void Engine::ShowDebugPanels()
+	{
+		static bool shouldShowEntityEditor = false;
+		float mainMenuPadding;
+
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+		
+		if(ImGui::BeginMainMenuBar())
+		{
+			mainMenuPadding = ImGui::GetWindowSize().y;
+			if(ImGui::BeginMenu("View"))
+			{
+				if(ImGui::MenuItem("Entity Editor"))
+				{
+					shouldShowEntityEditor = !shouldShowEntityEditor;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
+		if(shouldShowEntityEditor)
+		{
+			ImGui::Begin("Entity Editor", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+			ImGui::SetWindowPos({ 0, mainMenuPadding});
+			ImGui::SetWindowSize(
+				{ static_cast<float>(_windowWidth / 5), static_cast<float>(_windowHeight - mainMenuPadding) });
+			if (ImGui::Button("Add Entity", { static_cast<float>(_windowWidth / 5 - ImGui::GetStyle().WindowPadding.x * 2), 0 }))
+			{
+				static int entityCount = 0;
+				_entityManager.AddEntity("entity" + std::to_string(entityCount));
+				entityCount++;
+			}
+			int i = 0;
+			for (const auto& e : _entityManager.Entities)
+			{
+				if (ImGui::CollapsingHeader(e.get()->Name.c_str()))
+				{
+					char entityName[32] = "";
+					strcpy(entityName, e.get()->Name.c_str());
+					ImGui::BulletText("Name");
+					char inputTextLabel[32] = "##EntNameLabel";
+					strcat(inputTextLabel, std::to_string(i).c_str());
+					if (ImGui::InputText(inputTextLabel, entityName, 16, ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						e.get()->Name = entityName;
+					}
+					ImGui::BulletText("Components");
+					for (const auto& c : e.get()->ComponentList)
+					{
+						ImGui::TreeNode(c.get()->Name.c_str());
+					}
+				}
+
+				i++;
+			}
+			ImGui::End();
+			
+		}
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 }

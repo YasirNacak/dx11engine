@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "../Engine.h"
 #include <direct.h>
 #include <minwinbase.h>
 
@@ -25,7 +26,9 @@ namespace s3d { namespace graphics {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui_ImplWin32_Init(hwnd);
 		ImGui_ImplDX11_Init(this->_device.Get(), this->_deviceContext.Get());
-		ImGui::StyleColorsLight();
+		ImGui::StyleColorsClassic();
+		ImGui::GetStyle().WindowRounding = 0.0f;
+		ImGui::GetStyle().ScrollbarRounding = 0.0f;
 
 		return true;
 	}
@@ -231,7 +234,7 @@ namespace s3d { namespace graphics {
 		return true;
 	}
 
-	void Graphics::RenderFrame()
+	void Graphics::RenderFrame(Engine& engine)
 	{
 		float bgColor[] = {0.0f, 46.0f / 255.0f, 102.0f / 255.0f, 1.0f}; // keeping this very important color x)
 		this->_deviceContext->ClearRenderTargetView(this->_renderTargetView.Get(), bgColor);
@@ -323,7 +326,7 @@ namespace s3d { namespace graphics {
 
 			this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
 		}
-
+#if _DEBUG
 		static int fpsCounter = 0;
 		static std::string fpsString = "FPS: 0";
 		fpsCounter += 1;
@@ -333,25 +336,13 @@ namespace s3d { namespace graphics {
 			fpsCounter = 0;
 			_fpsTimer.Restart();
 		}
+		engine.ShowDebugPanels();
+#endif
 		_spriteBatch->Begin();
 #if _DEBUG
 		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 #endif
 		_spriteBatch->End();
-
-#if _DEBUG
-		// imgui debug windows and stuff
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::Begin("Debug Window");
-		ImGui::DragFloat("Quad Transparency", &alpha, 0.01f, 0.0f, 1.0f);
-		ImGui::End();
-
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-#endif
 
 		this->_swapChain->Present(0, NULL);
 	}

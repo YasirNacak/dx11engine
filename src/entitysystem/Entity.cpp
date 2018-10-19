@@ -1,20 +1,20 @@
 #include "Entity.h"
 
 namespace s3d { namespace entitysystem {
-	Entity::Entity(Manager& manager) :
-		_manager(manager)
+	Entity::Entity(std::string name, Manager& manager) :
+		Name(name), _manager(manager)
 	{
 	}
 
 	void Entity::Update(float mFT)
 	{
-		for (auto& c : _componentList)
+		for (auto& c : ComponentList)
 			c->Update(mFT);
 	}
 
 	void Entity::Draw()
 	{
-		for (auto& c : _componentList)
+		for (auto& c : ComponentList)
 			c->Draw();
 	}
 

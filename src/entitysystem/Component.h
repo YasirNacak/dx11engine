@@ -8,6 +8,7 @@ namespace s3d { namespace entitysystem
 
 	struct Component
 	{
+		std::string Name;
 		Entity* Entity;
 
 		virtual void Init() {}
@@ -19,7 +20,7 @@ namespace s3d { namespace entitysystem
 
 	namespace internal
 	{
-		inline ComponentID getUniqueComponentID() noexcept
+		inline ComponentID GetUniqueComponentID() noexcept
 		{
 			static ComponentID lastID{ 0u };
 			return lastID++;
@@ -29,7 +30,7 @@ namespace s3d { namespace entitysystem
 	template <typename T>
 	ComponentID getComponentTypeID() noexcept
 	{
-		static ComponentID typeID{ internal::getUniqueComponentID() };
+		static ComponentID typeID{ internal::GetUniqueComponentID() };
 		return typeID;
 	}
 } }

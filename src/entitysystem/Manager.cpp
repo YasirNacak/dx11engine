@@ -4,30 +4,30 @@ namespace s3d{ namespace entitysystem
 {
 	void Manager::Update(float mFT)
 	{
-		for (auto& e : _entities) e->Update(mFT);
+		for (auto& e : Entities) e->Update(mFT);
 	}
 
 	void Manager::Draw()
 	{
-		for (auto& e : _entities) e->Draw();
+		for (auto& e : Entities) e->Draw();
 	}
 
 	void Manager::Refresh()
 	{
-		_entities.erase(
-			std::remove_if(std::begin(_entities), std::end(_entities),
+		Entities.erase(
+			std::remove_if(std::begin(Entities), std::end(Entities),
 				[](const std::unique_ptr<Entity>& entity)
 		{
 			return !entity->IsAlive();
 		}),
-			std::end(_entities));
+			std::end(Entities));
 	}
 
-	Entity & Manager::AddEntity()
+	Entity& Manager::AddEntity(std::string name)
 	{
-		auto e(new Entity(*this));
+		auto e(new Entity(name, *this));
 		std::unique_ptr<Entity> uPtr{ e };
-		_entities.emplace_back(std::move(uPtr));
+		Entities.emplace_back(std::move(uPtr));
 		return *e;
 	}
 } }
