@@ -4,7 +4,7 @@
 namespace s3d {
 	bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
 	{
-		_keyboard.DisableAutoRepeatChars();
+		_keyboard.DisableAutoRepeatKeys();
 		width = GetSystemMetrics(SM_CXSCREEN);
 		height = GetSystemMetrics(SM_CYSCREEN);
 
@@ -12,6 +12,8 @@ namespace s3d {
 		_windowHeight = height;
 
 		_timer.Start();
+
+		IsInDebugMode = false;
 
 		if(!this->_renderWindow.Initialize(
 			this,
@@ -42,6 +44,9 @@ namespace s3d {
 		float dt = static_cast<float>(_timer.GetMillisecondsElapsed());
 		_timer.Restart();
 
+		_entityManager.Refresh();
+		_entityManager.Update(dt);
+
 		while(!_keyboard.IsCharBufferEmpty())
 		{
 			const auto ch = _keyboard.ReadChar();
@@ -51,6 +56,11 @@ namespace s3d {
 		{
 			auto kbe = _keyboard.ReadKey();
 			const auto keycode = kbe.GetKeyCode();
+
+			if(keycode == '0' && kbe.IsPress())
+			{
+				IsInDebugMode = !IsInDebugMode;
+			}
 		}
 
 		/*

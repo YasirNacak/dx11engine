@@ -382,22 +382,33 @@ namespace s3d { namespace graphics {
 
 			this->_deviceContext->DrawIndexed(_indexBuffer.GetBufferSize(), 0, 0);
 		}
-#if _DEBUG
-		static int fpsCounter = 0;
-		static std::string fpsString = "FPS: 0";
-		fpsCounter += 1;
-		if (_fpsTimer.GetMillisecondsElapsed() > 1000.0)
+		if(engine.IsInDebugMode)
 		{
-			fpsString = "FPS: " + std::to_string(fpsCounter);
-			fpsCounter = 0;
-			_fpsTimer.Restart();
+			static int fpsCounter = 0;
+			static std::string fpsString = "FPS: 0";
+			fpsCounter += 1;
+
+			if (_fpsTimer.GetMillisecondsElapsed() > 1000.0)
+			{
+				fpsString = "FPS: " + std::to_string(fpsCounter);
+				fpsCounter = 0;
+				_fpsTimer.Restart();
+			}
+
+			engine.ShowDebugPanels();
+
+			_spriteBatch->Begin();
+			_spriteFont->DrawString(
+				_spriteBatch.get(),
+				utility::StringConverter::StringToWide(fpsString).c_str(),
+				DirectX::XMFLOAT2(_windowWidth - 100, -2.5f),
+				DirectX::Colors::White, 0.0f,
+				DirectX::XMFLOAT2(0.0f, 0.0f),
+				DirectX::XMFLOAT2(1.0f, 1.0f));
+			_spriteBatch->End();
 		}
-		engine.ShowDebugPanels();
-#endif
+
 		_spriteBatch->Begin();
-#if _DEBUG
-		_spriteFont->DrawString(_spriteBatch.get(), utility::StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(_windowWidth - 100, 0), DirectX::Colors::Lime, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
-#endif
 		_spriteBatch->End();
 
 		this->_swapChain->Present(0, NULL);

@@ -20,6 +20,8 @@ namespace s3d {
 
 		void ShowDebugPanels();
 
+		bool IsInDebugMode;
+
 	private:
 		utility::Timer _timer;
 		entitysystem::Manager _entityManager;
