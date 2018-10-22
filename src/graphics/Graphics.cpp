@@ -45,7 +45,7 @@ namespace s3d { namespace graphics {
 
 		AdapterData highestMemAdapter = adapters[0];
 
-		for (int i = 1; i < adapters.size(); i++)
+		for (size_t i = 1; i < adapters.size(); i++)
 		{
 			if(adapters[i].Description.DedicatedVideoMemory > highestMemAdapter.Description.DedicatedVideoMemory)
 			{

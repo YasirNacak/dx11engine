@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "entitysystem/components/TransformComponent.h"
 
 namespace s3d {
 	bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
@@ -38,7 +39,7 @@ namespace s3d {
 
 	void Engine::Update()
 	{
-		float dt = _timer.GetMillisecondsElapsed();
+		float dt = static_cast<float>(_timer.GetMillisecondsElapsed());
 		_timer.Restart();
 
 		while(!_keyboard.IsCharBufferEmpty())
@@ -151,7 +152,9 @@ namespace s3d {
 			if (ImGui::Button("Add Entity", { static_cast<float>(_windowWidth / 5 - ImGui::GetStyle().WindowPadding.x * 2), 0 }))
 			{
 				static int entityCount = 0;
-				_entityManager.AddEntity("entity" + std::to_string(entityCount));
+				auto& ent = _entityManager.AddEntity("entity" + std::to_string(entityCount));
+				auto comp = ent.AddComponent<entitysystem::components::TransformComponent>();
+				comp.Init();
 				entityCount++;
 			}
 			int i = 0;
@@ -160,10 +163,10 @@ namespace s3d {
 				if (ImGui::CollapsingHeader(e.get()->Name.c_str()))
 				{
 					char entityName[32] = "";
-					strcpy(entityName, e.get()->Name.c_str());
+					strcpy_s(entityName, e.get()->Name.c_str());
 					ImGui::BulletText("Name");
 					char inputTextLabel[32] = "##EntNameLabel";
-					strcat(inputTextLabel, std::to_string(i).c_str());
+					strcat_s(inputTextLabel, std::to_string(i).c_str());
 					if (ImGui::InputText(inputTextLabel, entityName, 16, ImGuiInputTextFlags_EnterReturnsTrue))
 					{
 						e.get()->Name = entityName;
@@ -171,7 +174,10 @@ namespace s3d {
 					ImGui::BulletText("Components");
 					for (const auto& c : e.get()->ComponentList)
 					{
-						ImGui::TreeNode(c.get()->Name.c_str());
+						if(ImGui::CollapsingHeader(c.get()->Name.c_str()))
+						{
+							
+						}
 					}
 				}
 

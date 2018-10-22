@@ -37,6 +37,9 @@
     <Filter Include="src\entitysystem">
       <UniqueIdentifier>{464a35b2-4990-4cc1-b389-3264d1db1762}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\entitysystem\components">
+      <UniqueIdentifier>{0ff8590d-c93a-46e2-9a5a-af673669b48e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\input\Keyboard.cpp">
@@ -199,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="..\src\entitysystem\Manager.h">
       <Filter>src\entitysystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\entitysystem\components\TransformComponent.h">
+      <Filter>src\entitysystem\components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

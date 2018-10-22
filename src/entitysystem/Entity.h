@@ -36,7 +36,7 @@ namespace s3d { namespace entitysystem
 		template <typename T, typename... TArgs>
 		T& AddComponent(TArgs&&... mArgs)
 		{
-			assert(!HasComponent<T>());
+			//assert(!HasComponent<T>());
 
 			T* c(new T(std::forward<TArgs>(mArgs)...));
 			c->Entity = this;
