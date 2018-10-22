@@ -34,6 +34,7 @@ namespace s3d { namespace graphics {
 
 	private:
 		bool InitializeDirectX(HWND hwnd);
+		bool InitializeImGui(HWND hwnd);
 		bool InitializeShaders();
 		bool InitializeScene();
 

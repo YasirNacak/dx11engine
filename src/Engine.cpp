@@ -174,9 +174,10 @@ namespace s3d {
 					ImGui::BulletText("Components");
 					for (const auto& c : e.get()->ComponentList)
 					{
-						if(ImGui::CollapsingHeader(c.get()->Name.c_str()))
+						std::string nodeLabel = c.get()->Name + "##" + e.get()->Name;
+						if(ImGui::TreeNode(nodeLabel.c_str()))
 						{
-							
+							ImGui::TreePop();
 						}
 					}
 				}
@@ -184,8 +185,8 @@ namespace s3d {
 				i++;
 			}
 			ImGui::End();
-			
 		}
+
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
